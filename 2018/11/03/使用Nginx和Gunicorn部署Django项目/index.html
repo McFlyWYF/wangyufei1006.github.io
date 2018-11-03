@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Django实践以及服务器部署 Django的安装以及环境配置可以通过  Django入门与实践 来学习。 Django入门指南  常见命令 数据库移植 12python manage.py makemigrationspython manage.py migrate  创建超级管理员 1python manage.py createsuperuser  启动服务器 1python manage.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用Nginx和Gunicorn部署Django项目">
+<meta property="og:url" content="http://yoursite.com/2018/11/03/使用Nginx和Gunicorn部署Django项目/index.html">
+<meta property="og:site_name" content="McFly�ճ����">
+<meta property="og:description" content="Django实践以及服务器部署 Django的安装以及环境配置可以通过  Django入门与实践 来学习。 Django入门指南  常见命令 数据库移植 12python manage.py makemigrationspython manage.py migrate  创建超级管理员 1python manage.py createsuperuser  启动服务器 1python manage.">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="c:/Users/16500/AppData/Local/Temp/1538882981199.png">
+<meta property="og:updated_time" content="2018-11-03T09:23:11.148Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用Nginx和Gunicorn部署Django项目">
+<meta name="twitter:description" content="Django实践以及服务器部署 Django的安装以及环境配置可以通过  Django入门与实践 来学习。 Django入门指南  常见命令 数据库移植 12python manage.py makemigrationspython manage.py migrate  创建超级管理员 1python manage.py createsuperuser  启动服务器 1python manage.">
+<meta name="twitter:image" content="c:/Users/16500/AppData/Local/Temp/1538882981199.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/11/03/使用Nginx和Gunicorn部署Django项目/">
+
+
+
+
+
+  <title>使用Nginx和Gunicorn部署Django项目 | McFly�ճ����</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">McFly�ճ����</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/03/使用Nginx和Gunicorn部署Django项目/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="McFly">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="McFly�ճ����">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">使用Nginx和Gunicorn部署Django项目</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-03T17:22:54+08:00">
+                2018-11-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Django实践以及服务器部署"><a href="#Django实践以及服务器部署" class="headerlink" title="Django实践以及服务器部署"></a>Django实践以及服务器部署</h1><ul>
+<li>Django的安装以及环境配置可以通过  <a href="https://www.imooc.com/video/13928" target="_blank" rel="noopener">Django入门与实践</a> 来学习。</li>
+<li><a href="https://docs.djangoproject.com/en/2.1/" target="_blank" rel="noopener">Django入门指南</a></li>
+</ul>
+<h3 id="常见命令"><a href="#常见命令" class="headerlink" title="常见命令"></a>常见命令</h3><ul>
+<li><p>数据库移植</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">python manage.py makemigrations</span><br><span class="line">python manage.py migrate</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建超级管理员</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python manage.py createsuperuser</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>启动服务器</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python manage.py runserver(默认是<span class="number">8000</span>端口)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>导出数据</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">python manage.py dumpdata appname &gt; appname.json</span><br><span class="line">python manage.py loaddata appname.json</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>清空数据库</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python manage.py flush</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Django项目环境终端</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python manage.py shell</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>数据库命令行</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python manage.py dbshell</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建新项目</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">django-admin startproject project_name</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建新App</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python manage.py startapp app_name</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="项目结构"><a href="#项目结构" class="headerlink" title="项目结构"></a>项目结构</h3><p>Painting</p>
+<blockquote>
+<p>mainapp</p>
+<blockquote>
+<p><strong>init</strong>.py</p>
+<p>migrations</p>
+<p>admin.py</p>
+<p>apps.py</p>
+<p>forms.py</p>
+<p>models.py</p>
+<p>serializers.py</p>
+<p>tests.py</p>
+<p>urls.py</p>
+<p>views.py</p>
+</blockquote>
+<p>media</p>
+<p>Painting</p>
+<blockquote>
+<p><strong>init</strong>.py</p>
+<p>settings.py</p>
+<p>urls.py</p>
+<p>wsgi.py</p>
+</blockquote>
+<p>static</p>
+<p>db.sqilte3</p>
+<p>manage.py</p>
+<p>requirements.txt</p>
+</blockquote>
+<ul>
+<li>Painting<ul>
+<li>settings.py：app配置文件。</li>
+<li>urls.py：URL配置文件，配置页面URL。</li>
+<li>wsgi.py：python服务器网关接口。</li>
+</ul>
+</li>
+<li>manage.py：项目与命令行交互，项目管理器。</li>
+<li>db.sqlite3：数据库</li>
+<li>media：存储图片，音乐</li>
+<li>static：存储静态文件，比如.jsp，.html，.css。</li>
+<li>migrations：数据库移植模块，自动生成。</li>
+<li>mainapp<ul>
+<li>admin.py：后台管理系统配置</li>
+<li>apps.py：</li>
+<li>models.py：数据库建立代码</li>
+<li>forms.py：表结构代码</li>
+<li>serializers.py：序列化数据</li>
+<li>tests.py：自动化测试模块</li>
+<li>urls.py：前端URL</li>
+<li>views.py：执行响应的逻辑代码</li>
+</ul>
+</li>
+</ul>
+<h3 id="简单小例子"><a href="#简单小例子" class="headerlink" title="简单小例子"></a>简单小例子</h3><ul>
+<li><p>建立一个博客系统，需要进行一下代码编码。</p>
+<ul>
+<li><code>models.py</code></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Blog</span><span class="params">(models.Model)</span>:</span></span><br><span class="line">    BlogId = models.CharField(max_length=<span class="number">100</span>, primary_key=<span class="keyword">True</span>)  <span class="comment"># Id</span></span><br><span class="line">    BlogName = models.CharField(max_length=<span class="number">30</span>)  <span class="comment"># 博客名</span></span><br><span class="line">    Author = models.CharField(max_length=<span class="number">30</span>)  <span class="comment"># 作者</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__str__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self.BlogId</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>serializers.py</code></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BlogSerializer</span><span class="params">(serializers.ModelSerializer)</span>:</span></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Meta</span>:</span></span><br><span class="line">        model = Blog</span><br><span class="line">        fields = <span class="string">'__all__'</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>views.py</code></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BlogSet</span><span class="params">(viewsets.ModelViewSet)</span>:</span></span><br><span class="line">    queryset = Blog.objects.all()</span><br><span class="line">    serializer_class = BlogSerializer</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>myBlog/urls.py</code></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">url(<span class="string">r'blog/$'</span>,views.BlogSet)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>settings.py</code></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">INSTALLED_APPS = [<span class="string">'myBlog'</span>]</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LANGUAGE_CODE 设置为<span class="string">'zh_hans'</span>，也可以设置为<span class="string">'zh-Hans'</span>，但是在部署的时候第二个会出错，建议第一个。</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>blog/urls.py</code></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">url(r&apos;&apos;,include(&apos;myBlog.urls&apos;,namespqce=&apos;myBlog))</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>以上代码就是建立一个博客系统，没有前端，可以通过<code>127.0.0.1:8000/blog</code>访问，返回<code>json</code>对象。</p>
+</li>
+<li><p>访问<code>static/media</code>文件</p>
+<ul>
+<li><p><code>settings.py</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">STATIC_URL = <span class="string">'/static/'</span></span><br><span class="line">MEDIA_URL = <span class="string">'/media/'</span></span><br><span class="line">MEDIA_ROOT = os.path.join(BASE_DIR,<span class="string">'media'</span>)</span><br><span class="line">STATIC_ROOT = os.path.join(BASE_DIR,<span class="string">'static'</span>)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>blog/urls.py</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">url(<span class="string">r'^static/(?P&lt;path&gt;.*)$'</span>, serve, &#123;<span class="string">'document_root'</span>: settings.STATIC_ROOT&#125;),</span><br><span class="line">url(<span class="string">r'^media/(?P&lt;path&gt;.*)$'</span>, serve, &#123;<span class="string">'document_root'</span>: settings.MEDIA_ROOT&#125;),</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>以上就是编写简单的博客系统，下面讲解一下将博客系统部署到云服务器上，生产上线。</p>
+</li>
+</ul>
+<h3 id="使用Nginx和Gunicorn部署Django项目"><a href="#使用Nginx和Gunicorn部署Django项目" class="headerlink" title="使用Nginx和Gunicorn部署Django项目"></a>使用Nginx和Gunicorn部署Django项目</h3><ul>
+<li>满足条件<ul>
+<li>可以通过外网访问的服务器</li>
+<li>域名(当然没有域名也可以，直接通过IP进行访问)</li>
+</ul>
+</li>
+</ul>
+<h4 id="搭建服务器"><a href="#搭建服务器" class="headerlink" title="搭建服务器"></a>搭建服务器</h4><ul>
+<li>本教程使用的本地环境是Windows10，服务器环境为Ubuntu 16.01（64位）。</li>
+</ul>
+<h4 id="安装软件"><a href="#安装软件" class="headerlink" title="安装软件"></a>安装软件</h4><ul>
+<li><p>新的服务器的用户是root，我们需要新建一个拥有超级权限的新用户。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">#在root下创建一个新用户，wangyufei是用户名</span><br><span class="line">root@localhost:~# useradd -m -s /bin/bash wangyufei</span><br><span class="line"></span><br><span class="line">#把新创建的用户加入到超级权限组</span><br><span class="line">root@localhost:~# usermod -a -G sudo wangyufei</span><br><span class="line"></span><br><span class="line">#为新用户设置密码</span><br><span class="line">root@localhost:~# passwd wangyufei</span><br><span class="line"></span><br><span class="line">#切换到新用户</span><br><span class="line">root@localhost:~# su - wangyufei</span><br><span class="line"></span><br><span class="line">#切换成功，注意到root已经变为wangyufei了</span><br><span class="line">wangyuyfei@localhost:~$</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>如果是新服务器的话，需要更新一下系统。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wangyuyfei@localhost:~$ sudo apt-get update</span><br><span class="line">wangyuyfei@localhost:~$ sudo apt-get upgrade</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>安装软件，用到的软件有<code>Nginx</code>、<code>Git</code>、<code>pip</code>、<code>Django</code>、<code>virtualenv</code>和<code>Anaconda</code>。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">#安装Anaconda，找到最新的Anaconda版本https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/</span><br><span class="line"></span><br><span class="line">#下载</span><br><span class="line">wangyuyfei@localhost:~$ wget https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/Anaconda3-5.0.1-Linux-x86_64.sh</span><br><span class="line"></span><br><span class="line">#安装</span><br><span class="line">wangyuyfei@localhost:~$ bash Anaconda3-5.0.1-Linux-x86_64.sh</span><br><span class="line"></span><br><span class="line">#Linux里面默认的是python2.7，我们需要切换到python3.6</span><br><span class="line">wangyuyfei@localhost:~$ echo &apos;export PATH=&quot;/home/hqy/anaconda2/bin:$PATH&quot;&apos; &gt;&gt; ~/.bashrc</span><br><span class="line">wangyuyfei@localhost:~$ source ~/.bashrc</span><br><span class="line">#检查一下，看是否是python3.6</span><br><span class="line">wangyuyfei@localhost:~$ python --version</span><br><span class="line"></span><br><span class="line">#安装Nginx</span><br><span class="line">wangyuyfei@localhost:~$ sudo apt-get install nginx</span><br><span class="line"></span><br><span class="line">#安装git</span><br><span class="line">wangyuyfei@localhost:~$ sudo apt-get install git</span><br><span class="line"></span><br><span class="line">#安装pip</span><br><span class="line">wangyuyfei@localhost:~$ sudo apr-get install python3-pip</span><br><span class="line"></span><br><span class="line">#安装virtualenv</span><br><span class="line">wangyuyfei@localhost:~$ sudo pip install virtualenv(可能需要更新pip,使用命令更新)</span><br><span class="line"></span><br><span class="line">#安装Django</span><br><span class="line">sudo pip install django</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="解析域名"><a href="#解析域名" class="headerlink" title="解析域名"></a>解析域名</h4><ul>
+<li>将域名和服务器的IP地址绑定后，可以通过域名访问服务器。</li>
+</ul>
+<h4 id="启动Nginx服务"><a href="#启动Nginx服务" class="headerlink" title="启动Nginx服务"></a>启动Nginx服务</h4><ul>
+<li><p>Nginx是用来处理静态文件请求的，比如说访问一个博客文章的页面时，服务器会收到两种请求：</p>
+<ul>
+<li>显示文章的详细信息，这些信息保存在数据库中</li>
+<li>图片、CSS、js等存在服务器某个文件夹下的静态文件。</li>
+</ul>
+</li>
+<li><p>前面我们已经安装了Nginx，并且域名已经和IP地址绑定了，运行下面的命令启动Nginx服务：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wangyuyfei@localhost:~$ sudo service nginx start(这里需要注意一下，服务器需要开放80端口，外网才能进行访问)</span><br></pre></td></tr></table></figure>
+<p>在浏览器输入域名，看到如下页面说明Nginx启动成功了。</p>
+</li>
+</ul>
+<p><img src="C:\Users\16500\AppData\Local\Temp\1538882981199.png" alt="1538882981199"></p>
+<h2 id="部署代码"><a href="#部署代码" class="headerlink" title="部署代码"></a>部署代码</h2><h4 id="部署前的配置"><a href="#部署前的配置" class="headerlink" title="部署前的配置"></a>部署前的配置</h4><ul>
+<li><p>Django项目中会有一些CSS、JS等静态文件，这个目录通常位于根目录下，命名为static，需要在项目的<code>settings.py</code>里做一些配置。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">STATIC_URL = &apos;/static/&apos;</span><br><span class="line">STATIC_ROOT = os.path.join(BASE_DIR,&apos;static)#指明静态文件的收集目录</span><br></pre></td></tr></table></figure>
+<p>为了安全起见，在生产环境下关闭<code>DEBUG</code>选项以及设置允许访问的域名。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">DEBUG = False</span><br><span class="line">ALLOWED_HOSTS = [&apos;127.0.0.1&apos;,&apos;localhost&apos;,&apos;39.105.110.19&apos;]</span><br></pre></td></tr></table></figure>
+<p><code>ALLOWED_HOSTS</code>是允许访问的域名列表，前两个是本地域名，最后一个是服务器IP地址。</p>
+<p>项目还会依赖一些第三方python库，为了在服务器上安装，我们需要将全部依赖写入<code>requirements.txt</code>文件中激活本地的虚拟环境，进入项目的根目录，运行<code>pip freeze &gt;requirements.txt</code>命令。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">E:\Painting&gt;</span><br><span class="line">pip freeze &gt; requirements.txt</span><br></pre></td></tr></table></figure>
+<p>这时项目的根目录下会生成一个requirement.txt的文本文件，里面是项目的所有依赖。</p>
+</li>
+</ul>
+<h4 id="将代码上传到Github"><a href="#将代码上传到Github" class="headerlink" title="将代码上传到Github"></a>将代码上传到Github</h4><ul>
+<li><p>这里对于大多数人来说已经很熟悉了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git add .</span><br><span class="line">git commit -m &quot;blog&quot;</span><br><span class="line">git push origin master</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="设置服务器目录结构"><a href="#设置服务器目录结构" class="headerlink" title="设置服务器目录结构"></a>设置服务器目录结构</h4><ul>
+<li><p>我的服务器上存放代码的目录结构是这样的：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">/home/wangyufei</span><br><span class="line">	sites/</span><br><span class="line">		39.105.110.19/</span><br><span class="line">			env/	#python虚拟环境目录</span><br><span class="line">			Painting/	#项目目录</span><br></pre></td></tr></table></figure>
+<p>运行下面的命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wangyuyfei@localhost:~$ mkdir -p ~/sites/39.105.110.19</span><br></pre></td></tr></table></figure>
+<p>创建虚拟环境，进入到<code>39.105.110.19</code>目录下，运行<code>virtualenv</code>命令创建虚拟环境：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wangyuyfei@localhost:~$ cd ~/sites/39.105.110.19</span><br><span class="line">wangyuyfei@localhost:~/sites/39.105.110.19$ virtualenv --python=python3 env</span><br></pre></td></tr></table></figure>
+<p>检查一下虚拟环境是否创建成功，运行<code>ls</code>命令查看，看到<code>env</code>这个文件夹说明虚拟环境创建成功。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wangyuyfei@localhost:~/sites/39.105.110.19$ ls</span><br><span class="line">env</span><br></pre></td></tr></table></figure>
+<p>接着从代码仓库把项目拉取下来，<code>git clone</code>后面的地址换成自己项目的仓库地址。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wangyuyfei@localhost:~/sites/39.105.110.19$ git clone https://github.com/wangyufei1006/Painting.git</span><br></pre></td></tr></table></figure>
+<p>运行<code>ls</code>命令检查是否拉取成功。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wangyuyfei@localhost:~/sites/39.105.110.19$ ls</span><br><span class="line">AICopyBook env</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="安装项目依赖"><a href="#安装项目依赖" class="headerlink" title="安装项目依赖"></a>安装项目依赖</h4><ul>
+<li><p>激活虚拟环境，再进入到项目根目录，安装项目的全部依赖：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">wangyuyfei@localhost:~/sites/39.105.110.19$ source env/bin/activate</span><br><span class="line">(env) wangyuyfei@localhost:~/sites/39.105.110.19$ cd Painting/</span><br><span class="line">(env) wangyuyfei@localhost:~/sites/39.105.110.19/Painting$ pip install -r requirements.txt</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="收集静态文件"><a href="#收集静态文件" class="headerlink" title="收集静态文件"></a>收集静态文件</h4><ul>
+<li><p>虚拟环境下继续运行<code>python manage.py collectstatic</code>命令收集静态文件到static目录下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(env) wangyuyfei@localhost:~/sites/39.105.110.19/Painting$ python manage.py collectstatic</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="生成数据库"><a href="#生成数据库" class="headerlink" title="生成数据库"></a>生成数据库</h4><ul>
+<li><p>虚拟环境下运行<code>python manage.py migrate</code>命令创建数据库文件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(env) wangyuyfei@localhost:~/sites/39.105.110.19/Painting$ python manage.py migrate</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="创建超级用户"><a href="#创建超级用户" class="headerlink" title="创建超级用户"></a>创建超级用户</h4><ul>
+<li><p>虚拟环境下运行<code>python manage.py createsuperuser</code>命令创建一个超级用户，方便进入Django管理 后台。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(env) wangyuyfei@localhost:~/sites/39.105.110.19/Painting$ python manage.py createsuperuser</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="配置Nginx"><a href="#配置Nginx" class="headerlink" title="配置Nginx"></a>配置Nginx</h2><ul>
+<li><p>先在服务器的<code>/etc/nginx/sites-available/</code>目录下新建一个配置文件<code>sudo vim 39.105.110.19</code>，文件名设置为域名，写上下面的配置内容：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">/etc/nginx/sites-available/39.105.110.19</span><br><span class="line"></span><br><span class="line">server &#123;</span><br><span class="line">    charset utf-8;</span><br><span class="line">    listen 80;</span><br><span class="line">    server_name 39.105.110.19;	#服务器域名</span><br><span class="line">    </span><br><span class="line">    location /static &#123;</span><br><span class="line">        alias /home/wangyufei/sites/39.105.110.19/Painting/static		#指明静态文件存放目录</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    location / &#123;</span><br><span class="line">        proxy_set_header Host $host;</span><br><span class="line">        proxy_pass http://unix:/tmp/39.105.110.19.socket; 	#使用Unix套接字，防止端口冲突</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>接下来需要创建一个符号链接，把这个配置文件加入到启用的网站列表中去，被启用网站的目录在<code>/etc/nginx/sites-enabled/</code>，具体命令如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(env) wangyuyfei@localhost:~/sites/39.105.110.19/Painting$ sudo ln -s /etc/nginx/sites-available/39.105.110.19 /etc/nginx/sites-enabled/39.105.110.19</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="使用Gunicorn"><a href="#使用Gunicorn" class="headerlink" title="使用Gunicorn"></a>使用Gunicorn</h2><ul>
+<li><p>Gunicorn一般用来管理多个进程。</p>
+</li>
+<li><p>在虚拟环境下，安装Gunicorn：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(env) wangyuyfei@localhost:~/sites/39.105.110.19/Painting$ pip install gunicorn</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>用Gunicorn启动服务器进程：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(env) wangyuyfei@localhost:~/sites/39.105.110.19/Painting$ gunicorn --bind unix:/tmp/39.105.110.19.socket Painting.wsgi:application</span><br></pre></td></tr></table></figure>
+<p>浏览器输入域名，可以看到访问成功了。</p>
+</li>
+<li><p><code>注意</code>：此时如果访问到的还是Nginx的欢迎界面，需要删除<code>/etc/nginx/sites_available/default</code>和<code>/etc/nginx/sites_enabled/default</code>。</p>
+</li>
+</ul>
+<h3 id="自启动Gunicorn"><a href="#自启动Gunicorn" class="headerlink" title="自启动Gunicorn"></a>自启动Gunicorn</h3><ul>
+<li><p>现在Gunicorn是我们手动启动的，万一哪天服务器重启了我们又得手工启动。为此写一个脚本，当服务器重新启动后，脚本会帮我们重启Gunicorn，按Ctrl+c停止服务器进程。</p>
+<p>写一个启动脚本，脚本位于<code>/etc/init</code>目录下，且脚本文件名必须以<code>.conf</code>结尾：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">/etc/init/gunicorn-39.105.110.19.conf</span><br><span class="line"></span><br><span class="line">start on net-device-up	#在服务器联网时才启动gunicorn</span><br><span class="line">stop on shutdown	</span><br><span class="line"></span><br><span class="line">respawn		#重启gunicorn</span><br><span class="line"></span><br><span class="line">setuid wangyufei	#用户名</span><br><span class="line">chdir /home/wangyufei/static/39.105.110.19/Painting	#进入到指定目录</span><br><span class="line"></span><br><span class="line">exec ../env/bin/gunicorn --bind unix:/tmp/39.105.110.19.socket Painting.wsgi:application	#执行进程</span><br></pre></td></tr></table></figure>
+<p>通过<code>start</code>命令启动gunicorn：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo start gunicorn-39.105.110.19</span><br></pre></td></tr></table></figure>
+<p>以后代码更新了，只要运行下面的命令重启一下Nginx和Gunicorn可以使新的代码生效了：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo service nginx reload </span><br><span class="line">sudo restrt gunicorn-39.105.110.19</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>还有另外一种方法也可以实现自启动：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 新建目录</span><br><span class="line">sudo mkdir -p /usr/lib/systemd/system</span><br><span class="line"></span><br><span class="line"># 新建自启动的服务文件</span><br><span class="line">sudo vim /usr/lib/systemd/system/39.105.110.19.service</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">[Unit]</span><br><span class="line">After=syslog.target network.target remote-fs.target nss-lookup.target</span><br><span class="line">[Service]</span><br><span class="line"># 你的用户</span><br><span class="line">User=wangyufei</span><br><span class="line"># 你的目录</span><br><span class="line">WorkingDirectory=/home/wangyufei/sites/39.105.110.19/Painting</span><br><span class="line"># gunicorn启动命令</span><br><span class="line">ExecStart=/home/wangyufei/sites/env/bin/gunicorn --bind unix:/tmp/39.105.110.19.socket Painting.wsgi:application</span><br><span class="line">Restart=on-failure</span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># 启动服务</span><br><span class="line">sudo systemctl start 39.105.110.19</span><br><span class="line"></span><br><span class="line"># 添加服务到开机自动运行</span><br><span class="line">sudo systemctl enable 39.105.110.19.service</span><br><span class="line"></span><br><span class="line"># 查看进程,看看gunicorn是否已经启动,有两个进程</span><br><span class="line">ps -ef | grep gunicorn</span><br></pre></td></tr></table></figure></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/11/03/读者与写者的问题/" rel="next" title="读者与写者的问题">
+                <i class="fa fa-chevron-left"></i> 读者与写者的问题
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">McFly</p>
+              <p class="site-description motion-element" itemprop="description">ֻҪר��ȥ��ĳ���£���Ż�������ĺܺã���Ҫ��̤��ֻ��ȥѧϰ������ֻ���;���ϡ�</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Django实践以及服务器部署"><span class="nav-number">1.</span> <span class="nav-text">Django实践以及服务器部署</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#常见命令"><span class="nav-number">1.0.1.</span> <span class="nav-text">常见命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#项目结构"><span class="nav-number">1.0.2.</span> <span class="nav-text">项目结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#简单小例子"><span class="nav-number">1.0.3.</span> <span class="nav-text">简单小例子</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用Nginx和Gunicorn部署Django项目"><span class="nav-number">1.0.4.</span> <span class="nav-text">使用Nginx和Gunicorn部署Django项目</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#搭建服务器"><span class="nav-number">1.0.4.1.</span> <span class="nav-text">搭建服务器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#安装软件"><span class="nav-number">1.0.4.2.</span> <span class="nav-text">安装软件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#解析域名"><span class="nav-number">1.0.4.3.</span> <span class="nav-text">解析域名</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#启动Nginx服务"><span class="nav-number">1.0.4.4.</span> <span class="nav-text">启动Nginx服务</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#部署代码"><span class="nav-number">1.1.</span> <span class="nav-text">部署代码</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#部署前的配置"><span class="nav-number">1.1.0.1.</span> <span class="nav-text">部署前的配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#将代码上传到Github"><span class="nav-number">1.1.0.2.</span> <span class="nav-text">将代码上传到Github</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#设置服务器目录结构"><span class="nav-number">1.1.0.3.</span> <span class="nav-text">设置服务器目录结构</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#安装项目依赖"><span class="nav-number">1.1.0.4.</span> <span class="nav-text">安装项目依赖</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#收集静态文件"><span class="nav-number">1.1.0.5.</span> <span class="nav-text">收集静态文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#生成数据库"><span class="nav-number">1.1.0.6.</span> <span class="nav-text">生成数据库</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#创建超级用户"><span class="nav-number">1.1.0.7.</span> <span class="nav-text">创建超级用户</span></a></li></ol></li></ol><li class="nav-item nav-level-2"><a class="nav-link" href="#配置Nginx"><span class="nav-number">1.2.</span> <span class="nav-text">配置Nginx</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用Gunicorn"><span class="nav-number">1.3.</span> <span class="nav-text">使用Gunicorn</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#自启动Gunicorn"><span class="nav-number">1.3.1.</span> <span class="nav-text">自启动Gunicorn</span></a></li></ol></li></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">McFly</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

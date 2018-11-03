@@ -79,19 +79,19 @@
 
 
 
-<meta name="description" content="读者与写者的问题 例：有读写两组进程，共享一个文件。多个读者可同时访问文件，但多个写者不能同时访问文件，写者和读者也不能同时访问文件。  特征：资源被谁占用，读者，写者；读者会形成一个读者团。  分析： 写者—S—文件是否被占用；  读者团    第一个读者：文件是否被占有 中间读者：只增加读者团人数 最后一个读者：释放文件   互斥信号量mutex = 1； S = 1; count：读者团数量">
+<meta name="description" content="读者与写者的问题 例：有读写两组进程，共享一个文件。多个读者可同时访问文件，但多个写者不能同时访问文件，写者和读者也不能同时访问文件。  特征：资源被谁占用，读者，写者；读者会形成一个读者团。  A分析： 写者—S—文件是否被占用；  读者团    第一个读者：文件是否被占有 中间读者：只增加读者团人数 最后一个读者：释放文件   互斥信号量mutex = 1； S = 1; count：读者团数">
 <meta property="og:type" content="article">
-<meta property="og:title" content="McFly�ճ����">
+<meta property="og:title" content="读者与写者的问题">
 <meta property="og:url" content="http://yoursite.com/2018/11/03/读者与写者的问题/index.html">
 <meta property="og:site_name" content="McFly�ճ����">
-<meta property="og:description" content="读者与写者的问题 例：有读写两组进程，共享一个文件。多个读者可同时访问文件，但多个写者不能同时访问文件，写者和读者也不能同时访问文件。  特征：资源被谁占用，读者，写者；读者会形成一个读者团。  分析： 写者—S—文件是否被占用；  读者团    第一个读者：文件是否被占有 中间读者：只增加读者团人数 最后一个读者：释放文件   互斥信号量mutex = 1； S = 1; count：读者团数量">
+<meta property="og:description" content="读者与写者的问题 例：有读写两组进程，共享一个文件。多个读者可同时访问文件，但多个写者不能同时访问文件，写者和读者也不能同时访问文件。  特征：资源被谁占用，读者，写者；读者会形成一个读者团。  A分析： 写者—S—文件是否被占用；  读者团    第一个读者：文件是否被占有 中间读者：只增加读者团人数 最后一个读者：释放文件   互斥信号量mutex = 1； S = 1; count：读者团数">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://raw.github.com/wangyufei1006/Study-Notes/master/Image/os-1.png">
 <meta property="og:image" content="https://raw.github.com/wangyufei1006/Study-Notes/master/Image/os-5.png">
-<meta property="og:updated_time" content="2018-11-02T10:14:50.560Z">
+<meta property="og:updated_time" content="2018-11-03T09:24:17.049Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="McFly�ճ����">
-<meta name="twitter:description" content="读者与写者的问题 例：有读写两组进程，共享一个文件。多个读者可同时访问文件，但多个写者不能同时访问文件，写者和读者也不能同时访问文件。  特征：资源被谁占用，读者，写者；读者会形成一个读者团。  分析： 写者—S—文件是否被占用；  读者团    第一个读者：文件是否被占有 中间读者：只增加读者团人数 最后一个读者：释放文件   互斥信号量mutex = 1； S = 1; count：读者团数量">
+<meta name="twitter:title" content="读者与写者的问题">
+<meta name="twitter:description" content="读者与写者的问题 例：有读写两组进程，共享一个文件。多个读者可同时访问文件，但多个写者不能同时访问文件，写者和读者也不能同时访问文件。  特征：资源被谁占用，读者，写者；读者会形成一个读者团。  A分析： 写者—S—文件是否被占用；  读者团    第一个读者：文件是否被占有 中间读者：只增加读者团人数 最后一个读者：释放文件   互斥信号量mutex = 1； S = 1; count：读者团数">
 <meta name="twitter:image" content="https://raw.github.com/wangyufei1006/Study-Notes/master/Image/os-1.png">
 
 
@@ -128,7 +128,7 @@
 
 
 
-  <title> | McFly�ճ����</title>
+  <title>读者与写者的问题 | McFly�ճ����</title>
   
 
 
@@ -252,7 +252,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline"></h1>
+          <h1 class="post-title" itemprop="name headline">读者与写者的问题</h1>
         
 
         <div class="post-meta">
@@ -264,7 +264,7 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-03T17:14:29+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-03T17:19:56+08:00">
                 2018-11-03
               </time>
             
@@ -307,7 +307,7 @@
 <ul>
 <li><p>特征：资源被谁占用，读者，写者；读者会形成一个读者团。</p>
 </li>
-<li><p>分析：</p>
+<li><p>A分析：</p>
 <p><code>写者</code>—<code>S</code>—文件是否被占用；</p>
 <blockquote>
 <p>读者团</p>
@@ -389,8 +389,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/11/03/读者、写者和生产者、消费者的区别/" rel="next" title="">
-                <i class="fa fa-chevron-left"></i> 
+              <a href="/2018/11/03/生产者与消费者问题/" rel="next" title="生产者与消费者问题">
+                <i class="fa fa-chevron-left"></i> 生产者与消费者问题
               </a>
             
           </div>
@@ -399,8 +399,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/11/03/生产者与消费者问题/" rel="prev" title="">
-                 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/11/03/使用Nginx和Gunicorn部署Django项目/" rel="prev" title="使用Nginx和Gunicorn部署Django项目">
+                使用Nginx和Gunicorn部署Django项目 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -478,7 +478,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

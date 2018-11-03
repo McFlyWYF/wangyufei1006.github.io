@@ -81,7 +81,7 @@
 
 <meta name="description" content="生产者与消费者问题 PV操作是用来操作信号量的。  P：等待——wait——减法作用——阻塞作用  V：释放——signal——加法作用——唤醒作用  S.value &amp;gt; 0 ：有空闲CPU； S.value  = 0：CPU刚好用完； S.value &amp;lt; 0：进程等待；  P操作  12345678void wait(S)&amp;#123;    S.value--;    if (S.v">
 <meta property="og:type" content="article">
-<meta property="og:title" content="McFly�ճ����">
+<meta property="og:title" content="生产者与消费者问题">
 <meta property="og:url" content="http://yoursite.com/2018/11/03/生产者与消费者问题/index.html">
 <meta property="og:site_name" content="McFly�ճ����">
 <meta property="og:description" content="生产者与消费者问题 PV操作是用来操作信号量的。  P：等待——wait——减法作用——阻塞作用  V：释放——signal——加法作用——唤醒作用  S.value &amp;gt; 0 ：有空闲CPU； S.value  = 0：CPU刚好用完； S.value &amp;lt; 0：进程等待；  P操作  12345678void wait(S)&amp;#123;    S.value--;    if (S.v">
@@ -89,9 +89,9 @@
 <meta property="og:image" content="https://raw.github.com/wangyufei1006/Study-Notes/master/Image/os-2.png">
 <meta property="og:image" content="https://raw.github.com/wangyufei1006/Study-Notes/master/Image/os-3.png">
 <meta property="og:image" content="https://raw.github.com/wangyufei1006/Study-Notes/master/Image/os-4.png">
-<meta property="og:updated_time" content="2018-11-02T10:14:50.550Z">
+<meta property="og:updated_time" content="2018-11-03T09:20:50.373Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="McFly�ճ����">
+<meta name="twitter:title" content="生产者与消费者问题">
 <meta name="twitter:description" content="生产者与消费者问题 PV操作是用来操作信号量的。  P：等待——wait——减法作用——阻塞作用  V：释放——signal——加法作用——唤醒作用  S.value &amp;gt; 0 ：有空闲CPU； S.value  = 0：CPU刚好用完； S.value &amp;lt; 0：进程等待；  P操作  12345678void wait(S)&amp;#123;    S.value--;    if (S.v">
 <meta name="twitter:image" content="https://raw.github.com/wangyufei1006/Study-Notes/master/Image/os-2.png">
 
@@ -129,7 +129,7 @@
 
 
 
-  <title> | McFly�ճ����</title>
+  <title>生产者与消费者问题 | McFly�ճ����</title>
   
 
 
@@ -253,7 +253,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline"></h1>
+          <h1 class="post-title" itemprop="name headline">生产者与消费者问题</h1>
         
 
         <div class="post-meta">
@@ -265,7 +265,7 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-03T17:14:29+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-03T17:19:38+08:00">
                 2018-11-03
               </time>
             
@@ -327,8 +327,6 @@
 <li><p>解题思路：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">1.画图理解题目</span><br><span class="line">2.判断题目类型</span><br><span class="line">3.分析进程数目，填写进程模板</span><br><span class="line">4.补充基本代码</span><br><span class="line">5.补充P,V代码</span><br><span class="line">6.调整代码</span><br></pre></td></tr></table></figure>
 </li>
-</ul>
-<ul>
 <li><p>例：爸爸往桌子上每次放一个苹果，儿子每次从桌子上拿一个苹果，放苹果和拿苹果不能同时进行，桌子上最多放10个苹果，用PV操作实现同步互斥。</p>
 <ul>
 <li><p>分析：爸爸——生产者——剩余空间(empty) = 10</p>
@@ -440,8 +438,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/11/03/读者与写者的问题/" rel="next" title="">
-                <i class="fa fa-chevron-left"></i> 
+              <a href="/2018/11/03/死锁/" rel="next" title="死锁">
+                <i class="fa fa-chevron-left"></i> 死锁
               </a>
             
           </div>
@@ -449,6 +447,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/11/03/读者与写者的问题/" rel="prev" title="读者与写者的问题">
+                读者与写者的问题 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -525,7 +527,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>

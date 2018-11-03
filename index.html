@@ -232,6 +232,557 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/03/使用Nginx和Gunicorn部署Django项目/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="McFly">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="McFly�ճ����">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/03/使用Nginx和Gunicorn部署Django项目/" itemprop="url">使用Nginx和Gunicorn部署Django项目</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-03T17:22:54+08:00">
+                2018-11-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Django实践以及服务器部署"><a href="#Django实践以及服务器部署" class="headerlink" title="Django实践以及服务器部署"></a>Django实践以及服务器部署</h1><ul>
+<li>Django的安装以及环境配置可以通过  <a href="https://www.imooc.com/video/13928" target="_blank" rel="noopener">Django入门与实践</a> 来学习。</li>
+<li><a href="https://docs.djangoproject.com/en/2.1/" target="_blank" rel="noopener">Django入门指南</a></li>
+</ul>
+<h3 id="常见命令"><a href="#常见命令" class="headerlink" title="常见命令"></a>常见命令</h3><ul>
+<li><p>数据库移植</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">python manage.py makemigrations</span><br><span class="line">python manage.py migrate</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建超级管理员</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python manage.py createsuperuser</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>启动服务器</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python manage.py runserver(默认是<span class="number">8000</span>端口)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>导出数据</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">python manage.py dumpdata appname &gt; appname.json</span><br><span class="line">python manage.py loaddata appname.json</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>清空数据库</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python manage.py flush</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Django项目环境终端</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python manage.py shell</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>数据库命令行</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python manage.py dbshell</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建新项目</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">django-admin startproject project_name</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建新App</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python manage.py startapp app_name</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="项目结构"><a href="#项目结构" class="headerlink" title="项目结构"></a>项目结构</h3><p>Painting</p>
+<blockquote>
+<p>mainapp</p>
+<blockquote>
+<p><strong>init</strong>.py</p>
+<p>migrations</p>
+<p>admin.py</p>
+<p>apps.py</p>
+<p>forms.py</p>
+<p>models.py</p>
+<p>serializers.py</p>
+<p>tests.py</p>
+<p>urls.py</p>
+<p>views.py</p>
+</blockquote>
+<p>media</p>
+<p>Painting</p>
+<blockquote>
+<p><strong>init</strong>.py</p>
+<p>settings.py</p>
+<p>urls.py</p>
+<p>wsgi.py</p>
+</blockquote>
+<p>static</p>
+<p>db.sqilte3</p>
+<p>manage.py</p>
+<p>requirements.txt</p>
+</blockquote>
+<ul>
+<li>Painting<ul>
+<li>settings.py：app配置文件。</li>
+<li>urls.py：URL配置文件，配置页面URL。</li>
+<li>wsgi.py：python服务器网关接口。</li>
+</ul>
+</li>
+<li>manage.py：项目与命令行交互，项目管理器。</li>
+<li>db.sqlite3：数据库</li>
+<li>media：存储图片，音乐</li>
+<li>static：存储静态文件，比如.jsp，.html，.css。</li>
+<li>migrations：数据库移植模块，自动生成。</li>
+<li>mainapp<ul>
+<li>admin.py：后台管理系统配置</li>
+<li>apps.py：</li>
+<li>models.py：数据库建立代码</li>
+<li>forms.py：表结构代码</li>
+<li>serializers.py：序列化数据</li>
+<li>tests.py：自动化测试模块</li>
+<li>urls.py：前端URL</li>
+<li>views.py：执行响应的逻辑代码</li>
+</ul>
+</li>
+</ul>
+<h3 id="简单小例子"><a href="#简单小例子" class="headerlink" title="简单小例子"></a>简单小例子</h3><ul>
+<li><p>建立一个博客系统，需要进行一下代码编码。</p>
+<ul>
+<li><code>models.py</code></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Blog</span><span class="params">(models.Model)</span>:</span></span><br><span class="line">    BlogId = models.CharField(max_length=<span class="number">100</span>, primary_key=<span class="keyword">True</span>)  <span class="comment"># Id</span></span><br><span class="line">    BlogName = models.CharField(max_length=<span class="number">30</span>)  <span class="comment"># 博客名</span></span><br><span class="line">    Author = models.CharField(max_length=<span class="number">30</span>)  <span class="comment"># 作者</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__str__</span><span class="params">(self)</span>:</span></span><br><span class="line">        <span class="keyword">return</span> self.BlogId</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>serializers.py</code></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BlogSerializer</span><span class="params">(serializers.ModelSerializer)</span>:</span></span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Meta</span>:</span></span><br><span class="line">        model = Blog</span><br><span class="line">        fields = <span class="string">'__all__'</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>views.py</code></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BlogSet</span><span class="params">(viewsets.ModelViewSet)</span>:</span></span><br><span class="line">    queryset = Blog.objects.all()</span><br><span class="line">    serializer_class = BlogSerializer</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>myBlog/urls.py</code></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">url(<span class="string">r'blog/$'</span>,views.BlogSet)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>settings.py</code></li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">INSTALLED_APPS = [<span class="string">'myBlog'</span>]</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LANGUAGE_CODE 设置为<span class="string">'zh_hans'</span>，也可以设置为<span class="string">'zh-Hans'</span>，但是在部署的时候第二个会出错，建议第一个。</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>blog/urls.py</code></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">url(r&apos;&apos;,include(&apos;myBlog.urls&apos;,namespqce=&apos;myBlog))</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>以上代码就是建立一个博客系统，没有前端，可以通过<code>127.0.0.1:8000/blog</code>访问，返回<code>json</code>对象。</p>
+</li>
+<li><p>访问<code>static/media</code>文件</p>
+<ul>
+<li><p><code>settings.py</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">STATIC_URL = <span class="string">'/static/'</span></span><br><span class="line">MEDIA_URL = <span class="string">'/media/'</span></span><br><span class="line">MEDIA_ROOT = os.path.join(BASE_DIR,<span class="string">'media'</span>)</span><br><span class="line">STATIC_ROOT = os.path.join(BASE_DIR,<span class="string">'static'</span>)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>blog/urls.py</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">url(<span class="string">r'^static/(?P&lt;path&gt;.*)$'</span>, serve, &#123;<span class="string">'document_root'</span>: settings.STATIC_ROOT&#125;),</span><br><span class="line">url(<span class="string">r'^media/(?P&lt;path&gt;.*)$'</span>, serve, &#123;<span class="string">'document_root'</span>: settings.MEDIA_ROOT&#125;),</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>以上就是编写简单的博客系统，下面讲解一下将博客系统部署到云服务器上，生产上线。</p>
+</li>
+</ul>
+<h3 id="使用Nginx和Gunicorn部署Django项目"><a href="#使用Nginx和Gunicorn部署Django项目" class="headerlink" title="使用Nginx和Gunicorn部署Django项目"></a>使用Nginx和Gunicorn部署Django项目</h3><ul>
+<li>满足条件<ul>
+<li>可以通过外网访问的服务器</li>
+<li>域名(当然没有域名也可以，直接通过IP进行访问)</li>
+</ul>
+</li>
+</ul>
+<h4 id="搭建服务器"><a href="#搭建服务器" class="headerlink" title="搭建服务器"></a>搭建服务器</h4><ul>
+<li>本教程使用的本地环境是Windows10，服务器环境为Ubuntu 16.01（64位）。</li>
+</ul>
+<h4 id="安装软件"><a href="#安装软件" class="headerlink" title="安装软件"></a>安装软件</h4><ul>
+<li><p>新的服务器的用户是root，我们需要新建一个拥有超级权限的新用户。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">#在root下创建一个新用户，wangyufei是用户名</span><br><span class="line">root@localhost:~# useradd -m -s /bin/bash wangyufei</span><br><span class="line"></span><br><span class="line">#把新创建的用户加入到超级权限组</span><br><span class="line">root@localhost:~# usermod -a -G sudo wangyufei</span><br><span class="line"></span><br><span class="line">#为新用户设置密码</span><br><span class="line">root@localhost:~# passwd wangyufei</span><br><span class="line"></span><br><span class="line">#切换到新用户</span><br><span class="line">root@localhost:~# su - wangyufei</span><br><span class="line"></span><br><span class="line">#切换成功，注意到root已经变为wangyufei了</span><br><span class="line">wangyuyfei@localhost:~$</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>如果是新服务器的话，需要更新一下系统。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wangyuyfei@localhost:~$ sudo apt-get update</span><br><span class="line">wangyuyfei@localhost:~$ sudo apt-get upgrade</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>安装软件，用到的软件有<code>Nginx</code>、<code>Git</code>、<code>pip</code>、<code>Django</code>、<code>virtualenv</code>和<code>Anaconda</code>。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">#安装Anaconda，找到最新的Anaconda版本https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/</span><br><span class="line"></span><br><span class="line">#下载</span><br><span class="line">wangyuyfei@localhost:~$ wget https://mirrors.tuna.tsinghua.edu.cn/anaconda/archive/Anaconda3-5.0.1-Linux-x86_64.sh</span><br><span class="line"></span><br><span class="line">#安装</span><br><span class="line">wangyuyfei@localhost:~$ bash Anaconda3-5.0.1-Linux-x86_64.sh</span><br><span class="line"></span><br><span class="line">#Linux里面默认的是python2.7，我们需要切换到python3.6</span><br><span class="line">wangyuyfei@localhost:~$ echo &apos;export PATH=&quot;/home/hqy/anaconda2/bin:$PATH&quot;&apos; &gt;&gt; ~/.bashrc</span><br><span class="line">wangyuyfei@localhost:~$ source ~/.bashrc</span><br><span class="line">#检查一下，看是否是python3.6</span><br><span class="line">wangyuyfei@localhost:~$ python --version</span><br><span class="line"></span><br><span class="line">#安装Nginx</span><br><span class="line">wangyuyfei@localhost:~$ sudo apt-get install nginx</span><br><span class="line"></span><br><span class="line">#安装git</span><br><span class="line">wangyuyfei@localhost:~$ sudo apt-get install git</span><br><span class="line"></span><br><span class="line">#安装pip</span><br><span class="line">wangyuyfei@localhost:~$ sudo apr-get install python3-pip</span><br><span class="line"></span><br><span class="line">#安装virtualenv</span><br><span class="line">wangyuyfei@localhost:~$ sudo pip install virtualenv(可能需要更新pip,使用命令更新)</span><br><span class="line"></span><br><span class="line">#安装Django</span><br><span class="line">sudo pip install django</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="解析域名"><a href="#解析域名" class="headerlink" title="解析域名"></a>解析域名</h4><ul>
+<li>将域名和服务器的IP地址绑定后，可以通过域名访问服务器。</li>
+</ul>
+<h4 id="启动Nginx服务"><a href="#启动Nginx服务" class="headerlink" title="启动Nginx服务"></a>启动Nginx服务</h4><ul>
+<li><p>Nginx是用来处理静态文件请求的，比如说访问一个博客文章的页面时，服务器会收到两种请求：</p>
+<ul>
+<li>显示文章的详细信息，这些信息保存在数据库中</li>
+<li>图片、CSS、js等存在服务器某个文件夹下的静态文件。</li>
+</ul>
+</li>
+<li><p>前面我们已经安装了Nginx，并且域名已经和IP地址绑定了，运行下面的命令启动Nginx服务：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wangyuyfei@localhost:~$ sudo service nginx start(这里需要注意一下，服务器需要开放80端口，外网才能进行访问)</span><br></pre></td></tr></table></figure>
+<p>在浏览器输入域名，看到如下页面说明Nginx启动成功了。</p>
+</li>
+</ul>
+<p><img src="C:\Users\16500\AppData\Local\Temp\1538882981199.png" alt="1538882981199"></p>
+<h2 id="部署代码"><a href="#部署代码" class="headerlink" title="部署代码"></a>部署代码</h2><h4 id="部署前的配置"><a href="#部署前的配置" class="headerlink" title="部署前的配置"></a>部署前的配置</h4><ul>
+<li><p>Django项目中会有一些CSS、JS等静态文件，这个目录通常位于根目录下，命名为static，需要在项目的<code>settings.py</code>里做一些配置。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">STATIC_URL = &apos;/static/&apos;</span><br><span class="line">STATIC_ROOT = os.path.join(BASE_DIR,&apos;static)#指明静态文件的收集目录</span><br></pre></td></tr></table></figure>
+<p>为了安全起见，在生产环境下关闭<code>DEBUG</code>选项以及设置允许访问的域名。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">DEBUG = False</span><br><span class="line">ALLOWED_HOSTS = [&apos;127.0.0.1&apos;,&apos;localhost&apos;,&apos;39.105.110.19&apos;]</span><br></pre></td></tr></table></figure>
+<p><code>ALLOWED_HOSTS</code>是允许访问的域名列表，前两个是本地域名，最后一个是服务器IP地址。</p>
+<p>项目还会依赖一些第三方python库，为了在服务器上安装，我们需要将全部依赖写入<code>requirements.txt</code>文件中激活本地的虚拟环境，进入项目的根目录，运行<code>pip freeze &gt;requirements.txt</code>命令。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">E:\Painting&gt;</span><br><span class="line">pip freeze &gt; requirements.txt</span><br></pre></td></tr></table></figure>
+<p>这时项目的根目录下会生成一个requirement.txt的文本文件，里面是项目的所有依赖。</p>
+</li>
+</ul>
+<h4 id="将代码上传到Github"><a href="#将代码上传到Github" class="headerlink" title="将代码上传到Github"></a>将代码上传到Github</h4><ul>
+<li><p>这里对于大多数人来说已经很熟悉了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git add .</span><br><span class="line">git commit -m &quot;blog&quot;</span><br><span class="line">git push origin master</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="设置服务器目录结构"><a href="#设置服务器目录结构" class="headerlink" title="设置服务器目录结构"></a>设置服务器目录结构</h4><ul>
+<li><p>我的服务器上存放代码的目录结构是这样的：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">/home/wangyufei</span><br><span class="line">	sites/</span><br><span class="line">		39.105.110.19/</span><br><span class="line">			env/	#python虚拟环境目录</span><br><span class="line">			Painting/	#项目目录</span><br></pre></td></tr></table></figure>
+<p>运行下面的命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wangyuyfei@localhost:~$ mkdir -p ~/sites/39.105.110.19</span><br></pre></td></tr></table></figure>
+<p>创建虚拟环境，进入到<code>39.105.110.19</code>目录下，运行<code>virtualenv</code>命令创建虚拟环境：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wangyuyfei@localhost:~$ cd ~/sites/39.105.110.19</span><br><span class="line">wangyuyfei@localhost:~/sites/39.105.110.19$ virtualenv --python=python3 env</span><br></pre></td></tr></table></figure>
+<p>检查一下虚拟环境是否创建成功，运行<code>ls</code>命令查看，看到<code>env</code>这个文件夹说明虚拟环境创建成功。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wangyuyfei@localhost:~/sites/39.105.110.19$ ls</span><br><span class="line">env</span><br></pre></td></tr></table></figure>
+<p>接着从代码仓库把项目拉取下来，<code>git clone</code>后面的地址换成自己项目的仓库地址。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wangyuyfei@localhost:~/sites/39.105.110.19$ git clone https://github.com/wangyufei1006/Painting.git</span><br></pre></td></tr></table></figure>
+<p>运行<code>ls</code>命令检查是否拉取成功。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wangyuyfei@localhost:~/sites/39.105.110.19$ ls</span><br><span class="line">AICopyBook env</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="安装项目依赖"><a href="#安装项目依赖" class="headerlink" title="安装项目依赖"></a>安装项目依赖</h4><ul>
+<li><p>激活虚拟环境，再进入到项目根目录，安装项目的全部依赖：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">wangyuyfei@localhost:~/sites/39.105.110.19$ source env/bin/activate</span><br><span class="line">(env) wangyuyfei@localhost:~/sites/39.105.110.19$ cd Painting/</span><br><span class="line">(env) wangyuyfei@localhost:~/sites/39.105.110.19/Painting$ pip install -r requirements.txt</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="收集静态文件"><a href="#收集静态文件" class="headerlink" title="收集静态文件"></a>收集静态文件</h4><ul>
+<li><p>虚拟环境下继续运行<code>python manage.py collectstatic</code>命令收集静态文件到static目录下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(env) wangyuyfei@localhost:~/sites/39.105.110.19/Painting$ python manage.py collectstatic</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="生成数据库"><a href="#生成数据库" class="headerlink" title="生成数据库"></a>生成数据库</h4><ul>
+<li><p>虚拟环境下运行<code>python manage.py migrate</code>命令创建数据库文件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(env) wangyuyfei@localhost:~/sites/39.105.110.19/Painting$ python manage.py migrate</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="创建超级用户"><a href="#创建超级用户" class="headerlink" title="创建超级用户"></a>创建超级用户</h4><ul>
+<li><p>虚拟环境下运行<code>python manage.py createsuperuser</code>命令创建一个超级用户，方便进入Django管理 后台。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(env) wangyuyfei@localhost:~/sites/39.105.110.19/Painting$ python manage.py createsuperuser</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="配置Nginx"><a href="#配置Nginx" class="headerlink" title="配置Nginx"></a>配置Nginx</h2><ul>
+<li><p>先在服务器的<code>/etc/nginx/sites-available/</code>目录下新建一个配置文件<code>sudo vim 39.105.110.19</code>，文件名设置为域名，写上下面的配置内容：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">/etc/nginx/sites-available/39.105.110.19</span><br><span class="line"></span><br><span class="line">server &#123;</span><br><span class="line">    charset utf-8;</span><br><span class="line">    listen 80;</span><br><span class="line">    server_name 39.105.110.19;	#服务器域名</span><br><span class="line">    </span><br><span class="line">    location /static &#123;</span><br><span class="line">        alias /home/wangyufei/sites/39.105.110.19/Painting/static		#指明静态文件存放目录</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    location / &#123;</span><br><span class="line">        proxy_set_header Host $host;</span><br><span class="line">        proxy_pass http://unix:/tmp/39.105.110.19.socket; 	#使用Unix套接字，防止端口冲突</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>接下来需要创建一个符号链接，把这个配置文件加入到启用的网站列表中去，被启用网站的目录在<code>/etc/nginx/sites-enabled/</code>，具体命令如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(env) wangyuyfei@localhost:~/sites/39.105.110.19/Painting$ sudo ln -s /etc/nginx/sites-available/39.105.110.19 /etc/nginx/sites-enabled/39.105.110.19</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h2 id="使用Gunicorn"><a href="#使用Gunicorn" class="headerlink" title="使用Gunicorn"></a>使用Gunicorn</h2><ul>
+<li><p>Gunicorn一般用来管理多个进程。</p>
+</li>
+<li><p>在虚拟环境下，安装Gunicorn：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(env) wangyuyfei@localhost:~/sites/39.105.110.19/Painting$ pip install gunicorn</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>用Gunicorn启动服务器进程：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(env) wangyuyfei@localhost:~/sites/39.105.110.19/Painting$ gunicorn --bind unix:/tmp/39.105.110.19.socket Painting.wsgi:application</span><br></pre></td></tr></table></figure>
+<p>浏览器输入域名，可以看到访问成功了。</p>
+</li>
+<li><p><code>注意</code>：此时如果访问到的还是Nginx的欢迎界面，需要删除<code>/etc/nginx/sites_available/default</code>和<code>/etc/nginx/sites_enabled/default</code>。</p>
+</li>
+</ul>
+<h3 id="自启动Gunicorn"><a href="#自启动Gunicorn" class="headerlink" title="自启动Gunicorn"></a>自启动Gunicorn</h3><ul>
+<li><p>现在Gunicorn是我们手动启动的，万一哪天服务器重启了我们又得手工启动。为此写一个脚本，当服务器重新启动后，脚本会帮我们重启Gunicorn，按Ctrl+c停止服务器进程。</p>
+<p>写一个启动脚本，脚本位于<code>/etc/init</code>目录下，且脚本文件名必须以<code>.conf</code>结尾：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">/etc/init/gunicorn-39.105.110.19.conf</span><br><span class="line"></span><br><span class="line">start on net-device-up	#在服务器联网时才启动gunicorn</span><br><span class="line">stop on shutdown	</span><br><span class="line"></span><br><span class="line">respawn		#重启gunicorn</span><br><span class="line"></span><br><span class="line">setuid wangyufei	#用户名</span><br><span class="line">chdir /home/wangyufei/static/39.105.110.19/Painting	#进入到指定目录</span><br><span class="line"></span><br><span class="line">exec ../env/bin/gunicorn --bind unix:/tmp/39.105.110.19.socket Painting.wsgi:application	#执行进程</span><br></pre></td></tr></table></figure>
+<p>通过<code>start</code>命令启动gunicorn：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo start gunicorn-39.105.110.19</span><br></pre></td></tr></table></figure>
+<p>以后代码更新了，只要运行下面的命令重启一下Nginx和Gunicorn可以使新的代码生效了：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo service nginx reload </span><br><span class="line">sudo restrt gunicorn-39.105.110.19</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>还有另外一种方法也可以实现自启动：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 新建目录</span><br><span class="line">sudo mkdir -p /usr/lib/systemd/system</span><br><span class="line"></span><br><span class="line"># 新建自启动的服务文件</span><br><span class="line">sudo vim /usr/lib/systemd/system/39.105.110.19.service</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">[Unit]</span><br><span class="line">After=syslog.target network.target remote-fs.target nss-lookup.target</span><br><span class="line">[Service]</span><br><span class="line"># 你的用户</span><br><span class="line">User=wangyufei</span><br><span class="line"># 你的目录</span><br><span class="line">WorkingDirectory=/home/wangyufei/sites/39.105.110.19/Painting</span><br><span class="line"># gunicorn启动命令</span><br><span class="line">ExecStart=/home/wangyufei/sites/env/bin/gunicorn --bind unix:/tmp/39.105.110.19.socket Painting.wsgi:application</span><br><span class="line">Restart=on-failure</span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># 启动服务</span><br><span class="line">sudo systemctl start 39.105.110.19</span><br><span class="line"></span><br><span class="line"># 添加服务到开机自动运行</span><br><span class="line">sudo systemctl enable 39.105.110.19.service</span><br><span class="line"></span><br><span class="line"># 查看进程,看看gunicorn是否已经启动,有两个进程</span><br><span class="line">ps -ef | grep gunicorn</span><br></pre></td></tr></table></figure></li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/03/读者与写者的问题/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="McFly">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="McFly�ճ����">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/03/读者与写者的问题/" itemprop="url">读者与写者的问题</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-03T17:19:56+08:00">
+                2018-11-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="读者与写者的问题"><a href="#读者与写者的问题" class="headerlink" title="读者与写者的问题"></a>读者与写者的问题</h3><ul>
+<li><p>例：有读写两组进程，共享一个文件。多个读者可同时访问文件，但多个写者不能同时访问文件，写者和读者也不能同时访问文件。<img src="https://raw.github.com/wangyufei1006/Study-Notes/master/Image/os-1.png" alt="Image Text"></p>
+<ul>
+<li><p>特征：资源被谁占用，读者，写者；读者会形成一个读者团。</p>
+</li>
+<li><p>A分析：</p>
+<p><code>写者</code>—<code>S</code>—文件是否被占用；</p>
+<blockquote>
+<p>读者团</p>
+</blockquote>
+<blockquote>
+<blockquote>
+<p>第一个读者：文件是否被占有</p>
+<p>中间读者：只增加读者团人数</p>
+<p>最后一个读者：释放文件</p>
+</blockquote>
+</blockquote>
+<p>互斥信号量<code>mutex</code> = 1；</p>
+<p><code>S</code> = 1;</p>
+<p><code>count</code>：读者团数量；</p>
+</li>
+<li><p>伪代码</p>
+</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">writer1()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        P(S);</span><br><span class="line">        写;</span><br><span class="line">        V(S);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">writer2()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        P(S);</span><br><span class="line">        写;</span><br><span class="line">        V(S);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">reader1()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        P(mutex);</span><br><span class="line">        <span class="keyword">if</span>(count == <span class="number">0</span>)<span class="comment">//如果是第一个读者，判断文件是否被占有，中间读者不会去判断文件是否被占有</span></span><br><span class="line">        &#123;</span><br><span class="line">            P(S);</span><br><span class="line">        &#125;</span><br><span class="line">        count++;</span><br><span class="line">        V(mutex);</span><br><span class="line">        读;</span><br><span class="line">        P(mutex);</span><br><span class="line">        count--;</span><br><span class="line">        <span class="keyword">if</span>(count == <span class="number">0</span>)<span class="comment">//如果是最后一个读者，释放文件</span></span><br><span class="line">        &#123;</span><br><span class="line">            V(S);</span><br><span class="line">        &#125;</span><br><span class="line">        V(mutex);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">reader2()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        P(mutex);</span><br><span class="line">        <span class="keyword">if</span>(count == <span class="number">0</span>)   </span><br><span class="line">        &#123;</span><br><span class="line">            P(S);</span><br><span class="line">        &#125;</span><br><span class="line">        count++;</span><br><span class="line">        V(mutex);</span><br><span class="line">        读;</span><br><span class="line">        P(mutex);</span><br><span class="line">        count--;</span><br><span class="line">        <span class="keyword">if</span>(count == <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            V(S);</span><br><span class="line">        &#125;</span><br><span class="line">        V(mutex);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>上述代码也可以合并。</li>
+</ul>
+</li>
+<li><p>例：横跨峡谷有一根绳索，猴子通过绳索过峡谷。只要他们朝着相同的方向，同一时刻可以有多只猴子通过。但如果相反方向同时有猴子通过则会产生死锁(假设一直猴子无法从另一只钩子身上翻过去)。如果一只猴子想过峡谷，必须看是否有相反方向的猴子通过。请用P，V操作解决问题。<img src="https://raw.github.com/wangyufei1006/Study-Notes/master/Image/os-5.png" alt="Image Text"></p>
+</li>
+<li><p>分析：只有读者</p>
+</li>
+</ul>
+<blockquote>
+<p>左猴团</p>
+<blockquote>
+<p>第一只：桥占用了吗？</p>
+<p>中间猴子：只增加数量</p>
+<p>最后一只：释放桥资源</p>
+</blockquote>
+<p>右猴团</p>
+<blockquote>
+<p>第一只：桥占用了吗？</p>
+<p>中间猴子：只增加数量</p>
+<p>最后一只：释放桥资源</p>
+</blockquote>
+</blockquote>
+<ul>
+<li><p>初始值：<code>count_L</code>：左边猴子数量</p>
+<p>​               <code>count_R</code>：右边猴子数量</p>
+<p>​               互斥信号量：<code>S</code></p>
+<p>​           <code>mutex_L</code>：左边猴子信号量</p>
+<p>​           <code>mutex_R</code>：右边猴子信号量</p>
+</li>
+<li><p>伪代码</p>
+</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">left()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        P(mutex_L);</span><br><span class="line">    	<span class="keyword">if</span>(count_L == <span class="number">0</span>)</span><br><span class="line">    	&#123;</span><br><span class="line">         	P(S);   </span><br><span class="line">    	&#125;</span><br><span class="line">    	count_L++;</span><br><span class="line">        V(mutex_L);</span><br><span class="line">        过桥;</span><br><span class="line">        P(mutex_L);</span><br><span class="line">        count_L--;</span><br><span class="line">        <span class="keyword">if</span>(count_L == <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            V(S);</span><br><span class="line">        &#125;</span><br><span class="line">        V(mutex_L);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">right()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        P(mutex_R);</span><br><span class="line">    	<span class="keyword">if</span>(count_R == <span class="number">0</span>)</span><br><span class="line">    	&#123;</span><br><span class="line">         	P(S);   </span><br><span class="line">    	&#125;</span><br><span class="line">    	count_R++;</span><br><span class="line">        V(mutex_R);</span><br><span class="line">        过桥;</span><br><span class="line">        P(mutex_R);</span><br><span class="line">        count_R--;</span><br><span class="line">        <span class="keyword">if</span>(count_R == <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            V(S);</span><br><span class="line">        &#125;</span><br><span class="line">        V(mutex_R);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/03/生产者与消费者问题/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -251,7 +802,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/11/03/生产者与消费者问题/" itemprop="url">未命名</a></h1>
+                <a class="post-title-link" href="/2018/11/03/生产者与消费者问题/" itemprop="url">生产者与消费者问题</a></h1>
         
 
         <div class="post-meta">
@@ -263,7 +814,7 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-03T17:14:29+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-03T17:19:38+08:00">
                 2018-11-03
               </time>
             
@@ -327,8 +878,6 @@
 <li><p>解题思路：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">1.画图理解题目</span><br><span class="line">2.判断题目类型</span><br><span class="line">3.分析进程数目，填写进程模板</span><br><span class="line">4.补充基本代码</span><br><span class="line">5.补充P,V代码</span><br><span class="line">6.调整代码</span><br></pre></td></tr></table></figure>
 </li>
-</ul>
-<ul>
 <li><p>例：爸爸往桌子上每次放一个苹果，儿子每次从桌子上拿一个苹果，放苹果和拿苹果不能同时进行，桌子上最多放10个苹果，用PV操作实现同步互斥。</p>
 <ul>
 <li><p>分析：爸爸——生产者——剩余空间(empty) = 10</p>
@@ -464,319 +1013,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/03/读者与写者的问题/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="McFly">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="McFly�ճ����">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/11/03/读者与写者的问题/" itemprop="url">未命名</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-03T17:14:29+08:00">
-                2018-11-03
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="读者与写者的问题"><a href="#读者与写者的问题" class="headerlink" title="读者与写者的问题"></a>读者与写者的问题</h3><ul>
-<li><p>例：有读写两组进程，共享一个文件。多个读者可同时访问文件，但多个写者不能同时访问文件，写者和读者也不能同时访问文件。<img src="https://raw.github.com/wangyufei1006/Study-Notes/master/Image/os-1.png" alt="Image Text"></p>
-<ul>
-<li><p>特征：资源被谁占用，读者，写者；读者会形成一个读者团。</p>
-</li>
-<li><p>分析：</p>
-<p><code>写者</code>—<code>S</code>—文件是否被占用；</p>
-<blockquote>
-<p>读者团</p>
-</blockquote>
-<blockquote>
-<blockquote>
-<p>第一个读者：文件是否被占有</p>
-<p>中间读者：只增加读者团人数</p>
-<p>最后一个读者：释放文件</p>
-</blockquote>
-</blockquote>
-<p>互斥信号量<code>mutex</code> = 1；</p>
-<p><code>S</code> = 1;</p>
-<p><code>count</code>：读者团数量；</p>
-</li>
-<li><p>伪代码</p>
-</li>
-</ul>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">writer1()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        P(S);</span><br><span class="line">        写;</span><br><span class="line">        V(S);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">writer2()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        P(S);</span><br><span class="line">        写;</span><br><span class="line">        V(S);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">reader1()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        P(mutex);</span><br><span class="line">        <span class="keyword">if</span>(count == <span class="number">0</span>)<span class="comment">//如果是第一个读者，判断文件是否被占有，中间读者不会去判断文件是否被占有</span></span><br><span class="line">        &#123;</span><br><span class="line">            P(S);</span><br><span class="line">        &#125;</span><br><span class="line">        count++;</span><br><span class="line">        V(mutex);</span><br><span class="line">        读;</span><br><span class="line">        P(mutex);</span><br><span class="line">        count--;</span><br><span class="line">        <span class="keyword">if</span>(count == <span class="number">0</span>)<span class="comment">//如果是最后一个读者，释放文件</span></span><br><span class="line">        &#123;</span><br><span class="line">            V(S);</span><br><span class="line">        &#125;</span><br><span class="line">        V(mutex);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">reader2()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        P(mutex);</span><br><span class="line">        <span class="keyword">if</span>(count == <span class="number">0</span>)   </span><br><span class="line">        &#123;</span><br><span class="line">            P(S);</span><br><span class="line">        &#125;</span><br><span class="line">        count++;</span><br><span class="line">        V(mutex);</span><br><span class="line">        读;</span><br><span class="line">        P(mutex);</span><br><span class="line">        count--;</span><br><span class="line">        <span class="keyword">if</span>(count == <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            V(S);</span><br><span class="line">        &#125;</span><br><span class="line">        V(mutex);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>上述代码也可以合并。</li>
-</ul>
-</li>
-<li><p>例：横跨峡谷有一根绳索，猴子通过绳索过峡谷。只要他们朝着相同的方向，同一时刻可以有多只猴子通过。但如果相反方向同时有猴子通过则会产生死锁(假设一直猴子无法从另一只钩子身上翻过去)。如果一只猴子想过峡谷，必须看是否有相反方向的猴子通过。请用P，V操作解决问题。<img src="https://raw.github.com/wangyufei1006/Study-Notes/master/Image/os-5.png" alt="Image Text"></p>
-</li>
-<li><p>分析：只有读者</p>
-</li>
-</ul>
-<blockquote>
-<p>左猴团</p>
-<blockquote>
-<p>第一只：桥占用了吗？</p>
-<p>中间猴子：只增加数量</p>
-<p>最后一只：释放桥资源</p>
-</blockquote>
-<p>右猴团</p>
-<blockquote>
-<p>第一只：桥占用了吗？</p>
-<p>中间猴子：只增加数量</p>
-<p>最后一只：释放桥资源</p>
-</blockquote>
-</blockquote>
-<ul>
-<li><p>初始值：<code>count_L</code>：左边猴子数量</p>
-<p>​               <code>count_R</code>：右边猴子数量</p>
-<p>​               互斥信号量：<code>S</code></p>
-<p>​           <code>mutex_L</code>：左边猴子信号量</p>
-<p>​           <code>mutex_R</code>：右边猴子信号量</p>
-</li>
-<li><p>伪代码</p>
-</li>
-</ul>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">left()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        P(mutex_L);</span><br><span class="line">    	<span class="keyword">if</span>(count_L == <span class="number">0</span>)</span><br><span class="line">    	&#123;</span><br><span class="line">         	P(S);   </span><br><span class="line">    	&#125;</span><br><span class="line">    	count_L++;</span><br><span class="line">        V(mutex_L);</span><br><span class="line">        过桥;</span><br><span class="line">        P(mutex_L);</span><br><span class="line">        count_L--;</span><br><span class="line">        <span class="keyword">if</span>(count_L == <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            V(S);</span><br><span class="line">        &#125;</span><br><span class="line">        V(mutex_L);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">right()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        P(mutex_R);</span><br><span class="line">    	<span class="keyword">if</span>(count_R == <span class="number">0</span>)</span><br><span class="line">    	&#123;</span><br><span class="line">         	P(S);   </span><br><span class="line">    	&#125;</span><br><span class="line">    	count_R++;</span><br><span class="line">        V(mutex_R);</span><br><span class="line">        过桥;</span><br><span class="line">        P(mutex_R);</span><br><span class="line">        count_R--;</span><br><span class="line">        <span class="keyword">if</span>(count_R == <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            V(S);</span><br><span class="line">        &#125;</span><br><span class="line">        V(mutex_R);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/03/读者、写者和生产者、消费者的区别/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="McFly">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="McFly�ճ����">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/11/03/读者、写者和生产者、消费者的区别/" itemprop="url">未命名</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-03T17:14:29+08:00">
-                2018-11-03
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="读者、写者和生产者、消费者的区别"><a href="#读者、写者和生产者、消费者的区别" class="headerlink" title="读者、写者和生产者、消费者的区别"></a>读者、写者和生产者、消费者的区别</h3><ul>
-<li>资源的影响<ul>
-<li>读者，消费者消耗资源</li>
-<li>生产者，写者增加资源</li>
-</ul>
-</li>
-<li>读者——读者团（计数）：第一个、中间、最后一个。<ul>
-<li>生产者，消费者：对剩余空间、已占用空间计数</li>
-<li>读者对读者团有多少进行计数。</li>
-</ul>
-</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/03/死锁/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -796,7 +1032,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/11/03/死锁/" itemprop="url">未命名</a></h1>
+                <a class="post-title-link" href="/2018/11/03/死锁/" itemprop="url">死锁</a></h1>
         
 
         <div class="post-meta">
@@ -808,314 +1044,7 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-03T17:14:29+08:00">
-                2018-11-03
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="死锁"><a href="#死锁" class="headerlink" title="死锁"></a>死锁</h3><blockquote>
-<p>死锁</p>
-<p>原因及必要条件 </p>
-<p>处理问题</p>
-<blockquote>
-<p>预防死锁</p>
-<blockquote>
-<p>破坏必要条件</p>
-</blockquote>
-<p>避免死锁</p>
-<blockquote>
-<p>银行家算法</p>
-</blockquote>
-<p>检测与解除死锁</p>
-<blockquote>
-<p>死锁定理+资源分配图</p>
-</blockquote>
-</blockquote>
-</blockquote>
-<ul>
-<li><p>三胞胎</p>
-<ul>
-<li>死锁：资源被占有，双方互不相让，导致都不能运行。</li>
-<li>活锁：双方互相谦让，导致资源空闲。</li>
-<li>饥饿：有一方等待时间过长。</li>
-</ul>
-</li>
-<li><p>死锁避免</p>
-<ul>
-<li>银行家算法</li>
-</ul>
-<blockquote>
-<p>安全序列（不唯一）</p>
-<blockquote>
-<p>找到</p>
-<blockquote>
-<p>无死锁</p>
-<blockquote>
-<p>可避免</p>
-</blockquote>
-</blockquote>
-<p>找不到</p>
-<blockquote>
-<p>必死锁</p>
-<blockquote>
-<p>无法避免</p>
-</blockquote>
-</blockquote>
-</blockquote>
-</blockquote>
-</li>
-<li><p>银行家算法案例：</p>
-<p><img src="https://raw.github.com/wangyufei1006/Study-Notes/master/Image/os-6.png" alt="Image Text"></p>
-</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th></th>
-<th>最大值</th>
-<th>已分配</th>
-<th>可需要</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>万科</td>
-<td>6000</td>
-<td>4000</td>
-<td>2000</td>
-</tr>
-<tr>
-<td>恒大</td>
-<td>5000</td>
-<td>3000</td>
-<td>2000</td>
-</tr>
-<tr>
-<td>万达</td>
-<td>3000</td>
-<td>2000</td>
-<td>1000</td>
-</tr>
-</tbody>
-</table>
-<p>一共有资产一亿，已经分配的有4000 + 3000 + 2000 = 9000万，还剩1000万，可以满足的只有万达，所以将1000万分配给万达。</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th>最大值</th>
-<th>已分配</th>
-<th>可需要</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>万科</td>
-<td>6000</td>
-<td>4000</td>
-<td>2000</td>
-</tr>
-<tr>
-<td>恒大</td>
-<td>5000</td>
-<td>3000</td>
-<td>2000</td>
-</tr>
-</tbody>
-</table>
-<p>因为上面将剩余的已分配给万达，所以万达运行完，就会释放资源，所以目前剩下3000万的资产，可以将其分配给万科或者恒大，我就将其资产分配给万科。剩余3000 - 2000 = 1000万。</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th>最大值</th>
-<th>已分配</th>
-<th>可需要</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>恒大</td>
-<td>5000</td>
-<td>3000</td>
-<td>2000</td>
-</tr>
-</tbody>
-</table>
-<p>将万达释放的资源分配给万科之后，万科运行完就会释放资源，目前资产就会剩余1000 + 6000 = 7000万，最后将其分配给恒大。</p>
-<p>所以安全序列为<code>万达—万科—恒大</code>或者<code>万达—恒大—万科</code>。</p>
-<ul>
-<li>案例：<ul>
-<li>available（拥有的）</li>
-<li>Max（最大分配量）</li>
-<li>allocation（已分配）</li>
-<li>need（可需要）</li>
-<li>residue（剩余量）</li>
-</ul>
-</li>
-</ul>
-<p>$$<br>available = \left[<br> \begin{matrix}<br>   3 &amp; 3 &amp; 2<br>  \end{matrix}<br>  \right] \tag{1}<br>$$</p>
-<p>$$<br>Max = \left[<br> \begin{matrix}<br>   7 &amp; 5 &amp; 3  \<br>   3 &amp; 2 &amp; 2 \<br>   9 &amp; 0 &amp; 2 \<br>   2 &amp; 2 &amp; 2 \<br>   4 &amp; 3 &amp; 3 \<br>  \end{matrix}<br>  \right] \tag{2}<br>$$</p>
-<p>$$<br>allocation = \left[<br> \begin{matrix}<br>   0 &amp; 1 &amp; 0  \<br>   2 &amp; 0 &amp; 0 \<br>   3 &amp; 0 &amp; 2 \<br>   2 &amp; 1 &amp; 1 \<br>   0 &amp; 0 &amp; 2 \<br>  \end{matrix}<br>  \right] \tag{3}<br>$$</p>
-<p>$$<br>need = Max - allocation = \left[<br> \begin{matrix}<br>   7 &amp; 4 &amp; 3  \<br>   1 &amp; 2 &amp; 2 \<br>   6 &amp; 0 &amp; 0 \<br>   0 &amp; 1 &amp; 1 \<br>   4 &amp; 3 &amp; 1 \<br>  \end{matrix}<br>  \right] \tag{4}<br>$$</p>
-<p><code>need = Max - allocation</code></p>
-<p>上述对应的线程是P1，P2，P3，P4，P5，拥有的资源量是A,B,C。</p>
-<ul>
-<li><p>第一步：上述进程中，满足的有P2进程。释放P2进程资源，计算公式<code>available - need + Max</code>。<br>$$<br>need = \left[<br> \begin{matrix}<br>   7 &amp; 4 &amp; 3  \<br>   6 &amp; 0 &amp; 0 \<br>   0 &amp; 1 &amp; 1 \<br>   4 &amp; 3 &amp; 1 \<br>  \end{matrix}<br>  \right] \tag{5}<br>$$</p>
-<p>$$<br>residue  =  \left[<br> \begin{matrix}<br>   5 &amp; 3 &amp; 2<br>  \end{matrix}<br>  \right] \tag{6}<br>$$</p>
-</li>
-</ul>
-<ul>
-<li><p>第二步，满足的有P4和P5进程，这里以P4进程为例。<br>$$<br>need = \left[<br> \begin{matrix}<br>   7 &amp; 4 &amp; 3  \<br>   6 &amp; 0 &amp; 0 \<br>   4 &amp; 3 &amp; 1 \<br>  \end{matrix}<br>  \right] \tag{5}<br>$$</p>
-<p>$$<br>residue  =  \left[<br> \begin{matrix}<br>   7 &amp; 4 &amp; 3<br>  \end{matrix}<br>  \right] \tag{8}<br>$$</p>
-</li>
-</ul>
-<ul>
-<li><p>第三步，满足的有P1进程。<br>$$<br>need = \left[<br> \begin{matrix}<br>   6 &amp; 0 &amp; 0 \<br>   4 &amp; 3 &amp; 1 \<br>  \end{matrix}<br>  \right] \tag{5}<br>$$</p>
-<p>$$<br>residue  =  \left[<br> \begin{matrix}<br>   7 &amp; 5 &amp; 3<br>  \end{matrix}<br>  \right] \tag{8}<br>$$</p>
-</li>
-</ul>
-<ul>
-<li><p>第四步，满足的有P3进程。<br>$$<br>need = \left[<br> \begin{matrix}<br>   4 &amp; 3 &amp; 1 \<br>  \end{matrix}<br>  \right] \tag{5}<br>$$</p>
-<p>$$<br>residue  =  \left[<br> \begin{matrix}<br>   10 &amp; 5 &amp; 5<br>  \end{matrix}<br>  \right] \tag{8}<br>$$</p>
-</li>
-<li><p>第五步，进程结束。</p>
-</li>
-</ul>
-<p>此程序的安全序列是P2，P4，P1，P3，P5。</p>
-<p><img src="https://raw.github.com/wangyufei1006/Study-Notes/master/Image/os-7.png" alt="Image Text"></p>
-<ul>
-<li><p>资源转换图</p>
-<p><img src="https://raw.github.com/wangyufei1006/Study-Notes/master/Image/os-8.png" alt="Image Text"></p>
-</li>
-</ul>
-<p><img src="https://raw.github.com/wangyufei1006/Study-Notes/master/Image/os-9.png" alt="Image Text"><img src="https://raw.github.com/wangyufei1006/Study-Notes/master/Image/os-10.png" alt="Image Text"></p>
-<p>①寻找圆圈进程，判断申请边是否能够得到满足，满足则删除，不满足则找下一个进程。</p>
-<p><img src="https://raw.github.com/wangyufei1006/Study-Notes/master/Image/os-11.png" alt="Image Text"></p>
-<p>②<img src="https://raw.github.com/wangyufei1006/Study-Notes/master/Image/os-12.png" alt="Image Text"></p>
-<p>③<img src="https://raw.github.com/wangyufei1006/Study-Notes/master/Image/os-13.png" alt="Image Text"></p>
-<ul>
-<li><p>根据资源转换图写出四个矩阵<br>$$<br>Max = \left[<br> \begin{matrix}<br>   2 &amp; 1  \<br>   2&amp; 1 \<br>  \end{matrix}<br>  \right] \tag{5}<br>$$</p>
-<p>$$<br>allocation = \left[<br> \begin{matrix}<br>   2 &amp; 0  \<br>   1 &amp; 1 \<br>  \end{matrix}<br>  \right] \tag{5}<br>$$</p>
-<p>$$<br>need = \left[<br> \begin{matrix}<br>   0 &amp; 1  \<br>   1 &amp; 0 \<br>  \end{matrix}<br>  \right] \tag{5}<br>$$</p>
-<p>$$<br>available = \left[<br> \begin{matrix}<br>   1 &amp; 1 \<br>  \end{matrix}<br>  \right] \tag{5}<br>$$</p>
-</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/03/hello-world/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="McFly">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="McFly�ճ����">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/11/03/hello-world/" itemprop="url">死锁</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-03T16:51:09+08:00">
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-03T17:18:55+08:00">
                 2018-11-03
               </time>
             
@@ -1424,7 +1353,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
