@@ -159,198 +159,35 @@
 </nav>
 
         <div id="main">
-            <div class="post_page_title_img" style="height: 25rem;background-image: url(https://raw.github.com/wangyufei1006/Study-Notes/master/Image/2.jpg);background-position: center; background-repeat:no-repeat; background-size:cover;-moz-background-size:cover;overflow:hidden;">
-                <a href="#" style="padding: 4rem 4rem 2rem 4rem ;"><h2>死锁</h2></a>
+            <div class="post_page_title_img" style="height: 25rem;background-image: url(https://raw.github.com/wangyufei1006/Study-Notes/master/Image/3.jpg);background-position: center; background-repeat:no-repeat; background-size:cover;-moz-background-size:cover;overflow:hidden;">
+                <a href="#" style="padding: 4rem 4rem 2rem 4rem ;"><h2>mysql的安装配置</h2></a>
             </div>
             <!-- Post -->
             <div class="typo" style="padding: 3rem;">
-                <h3 id="死锁"><a href="#死锁" class="headerlink" title="死锁"></a>死锁</h3><blockquote>
-<p>死锁</p>
-<p>原因及必要条件 </p>
-<p>处理问题</p>
-<blockquote>
-<p>预防死锁</p>
-<blockquote>
-<p>破坏必要条件</p>
-</blockquote>
-<p>避免死锁</p>
-<blockquote>
-<p>银行家算法</p>
-</blockquote>
-<p>检测与解除死锁</p>
-<blockquote>
-<p>死锁定理+资源分配图</p>
-</blockquote>
-</blockquote>
-</blockquote>
-<ul>
-<li><p>三胞胎</p>
-<ul>
-<li>死锁：资源被占有，双方互不相让，导致都不能运行。</li>
-<li>活锁：双方互相谦让，导致资源空闲。</li>
-<li>饥饿：有一方等待时间过长。</li>
+                <h1 id="MySQL的下载，安装和配置"><a href="#MySQL的下载，安装和配置" class="headerlink" title="MySQL的下载，安装和配置"></a>MySQL的下载，安装和配置</h1><h3 id="第一步下载"><a href="#第一步下载" class="headerlink" title="第一步下载"></a>第一步下载</h3><ul>
+<li><a href="https://dev.mysql.com/downloads/mysql/" target="_blank" rel="noopener">下载地址</a>选择和自己电脑匹配的位数</li>
 </ul>
-</li>
-<li><p>死锁避免</p>
+<h3 id="第二步安装"><a href="#第二步安装" class="headerlink" title="第二步安装"></a>第二步安装</h3><ul>
+<li>将下载的MySQL安装包解压到自己想保存的文件夹即可。</li>
+</ul>
+<h3 id="环境配置"><a href="#环境配置" class="headerlink" title="环境配置"></a>环境配置</h3><ul>
+<li>在环境变量path里添加MySQL解压后的bin目录的地址，比如我的是：D:\MySQL\mysql-5.7.21-winx64\bin</li>
+<li>以管理员身份运行cmd，进入MySQL的bin目录下。</li>
+<li>安装MySQL，cmd中输入<code>mysqld -install</code>。</li>
+<li>接着输入<code>mysqld --initialize</code>。</li>
+</ul>
+<h3 id="配置MySQL的启动文件"><a href="#配置MySQL的启动文件" class="headerlink" title="配置MySQL的启动文件"></a>配置MySQL的启动文件</h3><ul>
+<li>如果解压后的MySQL中有一个名为my-default.ini的文件，则在配置文件中输入以下几项：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">basedir=D:\mysql-5.7.20-winx64          //mysql安装地址</span><br><span class="line">datadir=D:\mysql-5.7.20-winx64\data     //文件夹data的地址</span><br><span class="line">port=3306</span><br></pre></td></tr></table></figure>
+<p>如果没有自己创建一个，添加</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[mysqld]</span><br><span class="line">basedir=D:\mysql-5.7.20-winx64</span><br><span class="line">datadir=D:\mysql-5.7.20-winx64\data</span><br><span class="line">port=3306</span><br></pre></td></tr></table></figure>
 <ul>
-<li>银行家算法</li>
-</ul>
-<blockquote>
-<p>安全序列（不唯一）</p>
-<blockquote>
-<p>找到</p>
-<blockquote>
-<p>无死锁</p>
-<blockquote>
-<p>可避免</p>
-</blockquote>
-</blockquote>
-<p>找不到</p>
-<blockquote>
-<p>必死锁</p>
-<blockquote>
-<p>无法避免</p>
-</blockquote>
-</blockquote>
-</blockquote>
-</blockquote>
-</li>
-<li><p>银行家算法案例：</p>
-<p><img src="https://raw.github.com/wangyufei1006/Study-Notes/master/Image/os-6.png" alt="Image Text"></p>
-</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th></th>
-<th>最大值</th>
-<th>已分配</th>
-<th>可需要</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>万科</td>
-<td>6000</td>
-<td>4000</td>
-<td>2000</td>
-</tr>
-<tr>
-<td>恒大</td>
-<td>5000</td>
-<td>3000</td>
-<td>2000</td>
-</tr>
-<tr>
-<td>万达</td>
-<td>3000</td>
-<td>2000</td>
-<td>1000</td>
-</tr>
-</tbody>
-</table>
-<p>一共有资产一亿，已经分配的有4000 + 3000 + 2000 = 9000万，还剩1000万，可以满足的只有万达，所以将1000万分配给万达。</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th>最大值</th>
-<th>已分配</th>
-<th>可需要</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>万科</td>
-<td>6000</td>
-<td>4000</td>
-<td>2000</td>
-</tr>
-<tr>
-<td>恒大</td>
-<td>5000</td>
-<td>3000</td>
-<td>2000</td>
-</tr>
-</tbody>
-</table>
-<p>因为上面将剩余的已分配给万达，所以万达运行完，就会释放资源，所以目前剩下3000万的资产，可以将其分配给万科或者恒大，我就将其资产分配给万科。剩余3000 - 2000 = 1000万。</p>
-<table>
-<thead>
-<tr>
-<th></th>
-<th>最大值</th>
-<th>已分配</th>
-<th>可需要</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>恒大</td>
-<td>5000</td>
-<td>3000</td>
-<td>2000</td>
-</tr>
-</tbody>
-</table>
-<p>将万达释放的资源分配给万科之后，万科运行完就会释放资源，目前资产就会剩余1000 + 6000 = 7000万，最后将其分配给恒大。</p>
-<p>所以安全序列为<code>万达—万科—恒大</code>或者<code>万达—恒大—万科</code>。</p>
-<ul>
-<li>案例：<ul>
-<li>available（拥有的）</li>
-<li>Max（最大分配量）</li>
-<li>allocation（已分配）</li>
-<li>need（可需要）</li>
-<li>residue（剩余量）</li>
-</ul>
-</li>
-</ul>
-<p>$$<br>available = \left[<br> \begin{matrix}<br>   3 &amp; 3 &amp; 2<br>  \end{matrix}<br>  \right] \tag{1}<br>$$</p>
-<p>$$<br>Max = \left[<br> \begin{matrix}<br>   7 &amp; 5 &amp; 3  \<br>   3 &amp; 2 &amp; 2 \<br>   9 &amp; 0 &amp; 2 \<br>   2 &amp; 2 &amp; 2 \<br>   4 &amp; 3 &amp; 3 \<br>  \end{matrix}<br>  \right] \tag{2}<br>$$</p>
-<p>$$<br>allocation = \left[<br> \begin{matrix}<br>   0 &amp; 1 &amp; 0  \<br>   2 &amp; 0 &amp; 0 \<br>   3 &amp; 0 &amp; 2 \<br>   2 &amp; 1 &amp; 1 \<br>   0 &amp; 0 &amp; 2 \<br>  \end{matrix}<br>  \right] \tag{3}<br>$$</p>
-<p>$$<br>need = Max - allocation = \left[<br> \begin{matrix}<br>   7 &amp; 4 &amp; 3  \<br>   1 &amp; 2 &amp; 2 \<br>   6 &amp; 0 &amp; 0 \<br>   0 &amp; 1 &amp; 1 \<br>   4 &amp; 3 &amp; 1 \<br>  \end{matrix}<br>  \right] \tag{4}<br>$$</p>
-<p><code>need = Max - allocation</code></p>
-<p>上述对应的线程是P1，P2，P3，P4，P5，拥有的资源量是A,B,C。</p>
-<ul>
-<li><p>第一步：上述进程中，满足的有P2进程。释放P2进程资源，计算公式<code>available - need + Max</code>。<br>$$<br>need = \left[<br> \begin{matrix}<br>   7 &amp; 4 &amp; 3  \<br>   6 &amp; 0 &amp; 0 \<br>   0 &amp; 1 &amp; 1 \<br>   4 &amp; 3 &amp; 1 \<br>  \end{matrix}<br>  \right] \tag{5}<br>$$</p>
-<p>$$<br>residue  =  \left[<br> \begin{matrix}<br>   5 &amp; 3 &amp; 2<br>  \end{matrix}<br>  \right] \tag{6}<br>$$</p>
-</li>
-</ul>
-<ul>
-<li><p>第二步，满足的有P4和P5进程，这里以P4进程为例。<br>$$<br>need = \left[<br> \begin{matrix}<br>   7 &amp; 4 &amp; 3  \<br>   6 &amp; 0 &amp; 0 \<br>   4 &amp; 3 &amp; 1 \<br>  \end{matrix}<br>  \right] \tag{5}<br>$$</p>
-<p>$$<br>residue  =  \left[<br> \begin{matrix}<br>   7 &amp; 4 &amp; 3<br>  \end{matrix}<br>  \right] \tag{8}<br>$$</p>
-</li>
-</ul>
-<ul>
-<li><p>第三步，满足的有P1进程。<br>$$<br>need = \left[<br> \begin{matrix}<br>   6 &amp; 0 &amp; 0 \<br>   4 &amp; 3 &amp; 1 \<br>  \end{matrix}<br>  \right] \tag{5}<br>$$</p>
-<p>$$<br>residue  =  \left[<br> \begin{matrix}<br>   7 &amp; 5 &amp; 3<br>  \end{matrix}<br>  \right] \tag{8}<br>$$</p>
-</li>
-</ul>
-<ul>
-<li><p>第四步，满足的有P3进程。<br>$$<br>need = \left[<br> \begin{matrix}<br>   4 &amp; 3 &amp; 1 \<br>  \end{matrix}<br>  \right] \tag{5}<br>$$</p>
-<p>$$<br>residue  =  \left[<br> \begin{matrix}<br>   10 &amp; 5 &amp; 5<br>  \end{matrix}<br>  \right] \tag{8}<br>$$</p>
-</li>
-<li><p>第五步，进程结束。</p>
-</li>
-</ul>
-<p>此程序的安全序列是P2，P4，P1，P3，P5。</p>
-<p><img src="https://raw.github.com/wangyufei1006/Study-Notes/master/Image/os-7.png" alt="Image Text"></p>
-<ul>
-<li><p>资源转换图</p>
-<p><img src="https://raw.github.com/wangyufei1006/Study-Notes/master/Image/os-8.png" alt="Image Text"></p>
-</li>
-</ul>
-<p><img src="https://raw.github.com/wangyufei1006/Study-Notes/master/Image/os-9.png" alt="Image Text"><img src="https://raw.github.com/wangyufei1006/Study-Notes/master/Image/os-10.png" alt="Image Text"></p>
-<p>①寻找圆圈进程，判断申请边是否能够得到满足，满足则删除，不满足则找下一个进程。</p>
-<p><img src="https://raw.github.com/wangyufei1006/Study-Notes/master/Image/os-11.png" alt="Image Text"></p>
-<p>②<img src="https://raw.github.com/wangyufei1006/Study-Notes/master/Image/os-12.png" alt="Image Text"></p>
-<p>③<img src="https://raw.github.com/wangyufei1006/Study-Notes/master/Image/os-13.png" alt="Image Text"></p>
-<ul>
-<li><p>根据资源转换图写出四个矩阵<br>$$<br>Max = \left[<br> \begin{matrix}<br>   2 &amp; 1  \<br>   2&amp; 1 \<br>  \end{matrix}<br>  \right] \tag{5}<br>$$</p>
-<p>$$<br>allocation = \left[<br> \begin{matrix}<br>   2 &amp; 0  \<br>   1 &amp; 1 \<br>  \end{matrix}<br>  \right] \tag{5}<br>$$</p>
-<p>$$<br>need = \left[<br> \begin{matrix}<br>   0 &amp; 1  \<br>   1 &amp; 0 \<br>  \end{matrix}<br>  \right] \tag{5}<br>$$</p>
-<p>$$<br>available = \left[<br> \begin{matrix}<br>   1 &amp; 1 \<br>  \end{matrix}<br>  \right] \tag{5}<br>$$</p>
-</li>
+<li>启动MySQL服务：进入MySQL的bin目录(经过前面的步骤，此时正处于MySQL的bin目录下)，输入<code>net start mysql</code>.</li>
+<li>登陆MySQL，接着输入下面这条命令：<code>mysql -u root -p</code>。 这里要求我们输入密码，这个密码就是MySQL自动生成的初始密码，打开data文件夹，找到.err文件，里面有密码。</li>
+<li>修改初始密码<code>set password for root@localhost=password(&#39;自己设置的密码&#39;);</code></li>
+<li>退出MySQL：接着输入<code>quit</code>。</li>
+<li>使用新密码登陆(必须处于MySQL的bin目录下)，输入<code>mysql -u root -p</code>。</li>
 </ul>
 
             </div>
@@ -414,8 +251,8 @@ $('.btn_click_load').click(function() {
 -->
 <script type="text/javascript">
     var disqus_config = function () {
-        this.page.url = 'http://yoursite.com/2018/11/03/死锁/';  // Replace PAGE_URL with your page's canonical URL variable
-        this.page.identifier = 'http://yoursite.com/2018/11/03/死锁/'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+        this.page.url = 'http://yoursite.com/2018/10/26/mysql的安装配置/';  // Replace PAGE_URL with your page's canonical URL variable
+        this.page.identifier = 'http://yoursite.com/2018/10/26/mysql的安装配置/'; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
     };
 </script>
 
