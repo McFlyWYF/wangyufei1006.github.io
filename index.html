@@ -232,6 +232,858 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/03/生产者与消费者问题/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="McFly">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="McFly�ճ����">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/03/生产者与消费者问题/" itemprop="url">未命名</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-03T17:14:29+08:00">
+                2018-11-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="生产者与消费者问题"><a href="#生产者与消费者问题" class="headerlink" title="生产者与消费者问题"></a>生产者与消费者问题</h3><ul>
+<li><p>PV操作是用来操作信号量的。</p>
+<ul>
+<li><p>P：等待——wait——减法作用——阻塞作用</p>
+</li>
+<li><p>V：释放——signal——加法作用——唤醒作用</p>
+</li>
+<li><p><code>S.value &gt; 0</code> ：有空闲CPU；</p>
+<p><code>S.value  = 0</code>：CPU刚好用完；</p>
+<p><code>S.value &lt; 0</code>：进程等待；</p>
+<ul>
+<li>P操作</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">wait</span><span class="params">(S)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    S.value--;</span><br><span class="line">    <span class="keyword">if</span> (S.value &lt; <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        加入阻塞队列;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>V操作</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">signal</span><span class="params">(S)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    S.value++;</span><br><span class="line">    <span class="keyword">if</span> (S.value &lt;= <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">    	唤醒阻塞队列第一个进程;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>解题思路：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">1.画图理解题目</span><br><span class="line">2.判断题目类型</span><br><span class="line">3.分析进程数目，填写进程模板</span><br><span class="line">4.补充基本代码</span><br><span class="line">5.补充P,V代码</span><br><span class="line">6.调整代码</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<ul>
+<li><p>例：爸爸往桌子上每次放一个苹果，儿子每次从桌子上拿一个苹果，放苹果和拿苹果不能同时进行，桌子上最多放10个苹果，用PV操作实现同步互斥。</p>
+<ul>
+<li><p>分析：爸爸——生产者——剩余空间(empty) = 10</p>
+<p>​            儿子——消费者——已占用空间(full) = 0</p>
+<p>​         信号量S = 1，用来实现互斥。</p>
+</li>
+<li><p>特征：①容器 ≤ 容量</p>
+<p>​            ②生产    消费</p>
+</li>
+<li><p>伪代码</p>
+</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Dad()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        P(empty);<span class="comment">//判断盘子是否已满</span></span><br><span class="line">        P(S);</span><br><span class="line">        放苹果；</span><br><span class="line">        V(S);</span><br><span class="line">        V(full);<span class="comment">//对已占用空间+1</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Son()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span>()</span><br><span class="line">    &#123;</span><br><span class="line">        P(full);<span class="comment">//判断盘子是否为空</span></span><br><span class="line">        P(S);</span><br><span class="line">        取苹果;</span><br><span class="line">        V(S);</span><br><span class="line">        V(empty);<span class="comment">//对盘子剩余空间+1</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>例：桌子上有个盘子，每次只能放一个水果，妈妈放橘子，爸爸放苹果，儿子吃橘子，女儿吃苹果。盘子为空，爸爸或妈妈才能放水果，盘子有水果时，儿子和女儿才能取水果。</p>
+<ul>
+<li><p>分析:</p>
+<p><img src="https://raw.github.com/wangyufei1006/Study-Notes/master/Image/os-2.png" alt="Image Text"></p>
+</li>
+<li><p>初始值：<code>orange</code> = 0</p>
+<p>​           <code>apple</code> = 0</p>
+<p>​               <code>plate</code> = 1</p>
+<p>​               <code>S</code> = 1</p>
+</li>
+<li><p>伪代码</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Mom()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        P(plate);</span><br><span class="line">        P(S);</span><br><span class="line">        放橘子;</span><br><span class="line">        V(S);</span><br><span class="line">        V(orange);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Dad()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        P(plate);</span><br><span class="line">        P(S);</span><br><span class="line">        放苹果;</span><br><span class="line">        V(S);</span><br><span class="line">        V(apple);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Son()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        P(orange);</span><br><span class="line">        P(S);</span><br><span class="line">        取橘子;</span><br><span class="line">        V(S);</span><br><span class="line">        V(plate);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">Daughter()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        P(apple);</span><br><span class="line">        P(S);</span><br><span class="line">        取苹果;</span><br><span class="line">        V(S);</span><br><span class="line">        V(plate);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>操作同一个对象的时候，使用信号量S来实现互斥。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>[2015—408统考]</p>
+<ul>
+<li><p>有A,B两个人通过信箱辩论，每个人都从自己的信箱取得对方的问题，将答案和新问题组成一个邮件放入对方的信箱中。假设A的信箱可装M封邮件，B的信箱可装N封邮件。初始时A信箱有X封，B信箱有Y封，，辩论者每次只取一封邮件。请用P,V操作实现，并解释信号量的初始值和含义。<img src="https://raw.github.com/wangyufei1006/Study-Notes/master/Image/os-3.png" alt="Image Text"></p>
+<ul>
+<li><p>分析：生产者A——B的剩余空间</p>
+<p>​        生产者B——A的剩余空间</p>
+<p>​        消费者A——自己邮箱还有多少封信</p>
+<p>​        消费者B——自己邮箱还有多少封信</p>
+<p>​         <code>full-A</code>：A信箱有多少封邮件</p>
+<p>​         <code>empty-A</code>：A信箱的容量</p>
+<p>​         <code>full-B</code>：B信箱有多少封邮件</p>
+<p>​         <code>empty-B</code>：B信箱的容量</p>
+<p>​             <code>mutex-A</code>：A信箱的信号量</p>
+<p>​         <code>mutex-B</code>：B信箱的信号量 </p>
+</li>
+<li><p>初始值：<code>mutex-A</code> = 1，<code>mutex-B</code> = 1</p>
+<p>​           <code>full-A</code> = x ， <code>empty-A</code> = M - X</p>
+<p>​               <code>full-B</code> = y，  <code>empty-B</code> = N - y</p>
+</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">A()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">    P(full-A);</span><br><span class="line">    P(mutex-A);</span><br><span class="line">    从自己邮箱取信;</span><br><span class="line">    V(mutex-A);</span><br><span class="line">    V(empty-A);</span><br><span class="line">    读信;</span><br><span class="line">    P(empty-B);</span><br><span class="line">    P(mutex-B);</span><br><span class="line">    向B邮箱投信;</span><br><span class="line">    V(mutex-B);</span><br><span class="line">    V(full-B);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">B()</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">    P(full-B);</span><br><span class="line">    P(mutex-B);</span><br><span class="line">    从自己邮箱取信;</span><br><span class="line">    V(mutex-B);</span><br><span class="line">    V(empty-B);</span><br><span class="line">    读信;</span><br><span class="line">    P(empty-A);</span><br><span class="line">    P(mutex-A);</span><br><span class="line">    向A邮箱投信;</span><br><span class="line">    V(mutex-A);</span><br><span class="line">    V(full-A);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>[2014—408统考]</p>
+<ul>
+<li><p>例：系统中有多个生产者和消费者，共享一个能存放1000件产品的环形缓冲区(初始为空)。当缓冲区未满时生产者可放入生产的一个产品，否则等待。当缓冲区未空时，消费者进程可取走一件产品，否则等待。要求一个消费者从缓冲区连续取10件产品后，其他消费者才能取走产品。请用P，V操作实现该流程并解释信号量含义。<img src="https://raw.github.com/wangyufei1006/Study-Notes/master/Image/os-4.png" alt="Image Text"></p>
+<ul>
+<li><p>分析：<code>生产者（j）</code>—剩余空间</p>
+<p>​        <code>生产者（i）</code>—剩余空间</p>
+<p>​        <code>消费者（m）</code>—物件数量</p>
+<p>​            <code>消费者（n）</code>—物件数量</p>
+</li>
+<li><p>初始值：<code>empty</code> = 1000;</p>
+<p>​               <code>full</code> = 0;</p>
+<p>​               <code>mutex</code> = 1;</p>
+<p>​               <code>mutex1</code> = 1;</p>
+</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">j()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">    	P(empty);</span><br><span class="line">        P(mutex);</span><br><span class="line">        放一件产品;</span><br><span class="line">        V(mutex);</span><br><span class="line">        V(full);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">i()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">    	P(empty);</span><br><span class="line">        P(mutex);</span><br><span class="line">     	放一件产品；</span><br><span class="line">        V(mutex);</span><br><span class="line">        V(full);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">m()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        P(mutex1);</span><br><span class="line">        <span class="keyword">for</span>(int i = <span class="number">0</span>;i &lt; <span class="number">10</span>;i++)</span><br><span class="line">        &#123;</span><br><span class="line">            P(full);</span><br><span class="line">        	P(mutex);</span><br><span class="line">			取一件物品；</span><br><span class="line">        	V(mutex);</span><br><span class="line">        	V(empty);</span><br><span class="line">        &#125;</span><br><span class="line">        V(mutex1);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">n()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span>()</span><br><span class="line">    &#123;</span><br><span class="line">        P(mutex1);</span><br><span class="line">    	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; <span class="number">10</span>;i++)</span><br><span class="line">        &#123;</span><br><span class="line">            P(full);</span><br><span class="line">            P(mutex);</span><br><span class="line">		    取一件物品；</span><br><span class="line">        	V(mutex);</span><br><span class="line">        	V(empty);</span><br><span class="line">        &#125;</span><br><span class="line">        V(mutex1);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>上述代码中，<code>m</code>和<code>n</code>，<code>i</code>和<code>j</code>的代码一样，所以合并<code>m</code>和<code>n</code>，<code>i</code>和<code>j</code>。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/03/读者与写者的问题/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="McFly">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="McFly�ճ����">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/03/读者与写者的问题/" itemprop="url">未命名</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-03T17:14:29+08:00">
+                2018-11-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="读者与写者的问题"><a href="#读者与写者的问题" class="headerlink" title="读者与写者的问题"></a>读者与写者的问题</h3><ul>
+<li><p>例：有读写两组进程，共享一个文件。多个读者可同时访问文件，但多个写者不能同时访问文件，写者和读者也不能同时访问文件。<img src="https://raw.github.com/wangyufei1006/Study-Notes/master/Image/os-1.png" alt="Image Text"></p>
+<ul>
+<li><p>特征：资源被谁占用，读者，写者；读者会形成一个读者团。</p>
+</li>
+<li><p>分析：</p>
+<p><code>写者</code>—<code>S</code>—文件是否被占用；</p>
+<blockquote>
+<p>读者团</p>
+</blockquote>
+<blockquote>
+<blockquote>
+<p>第一个读者：文件是否被占有</p>
+<p>中间读者：只增加读者团人数</p>
+<p>最后一个读者：释放文件</p>
+</blockquote>
+</blockquote>
+<p>互斥信号量<code>mutex</code> = 1；</p>
+<p><code>S</code> = 1;</p>
+<p><code>count</code>：读者团数量；</p>
+</li>
+<li><p>伪代码</p>
+</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">writer1()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        P(S);</span><br><span class="line">        写;</span><br><span class="line">        V(S);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">writer2()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        P(S);</span><br><span class="line">        写;</span><br><span class="line">        V(S);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">reader1()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        P(mutex);</span><br><span class="line">        <span class="keyword">if</span>(count == <span class="number">0</span>)<span class="comment">//如果是第一个读者，判断文件是否被占有，中间读者不会去判断文件是否被占有</span></span><br><span class="line">        &#123;</span><br><span class="line">            P(S);</span><br><span class="line">        &#125;</span><br><span class="line">        count++;</span><br><span class="line">        V(mutex);</span><br><span class="line">        读;</span><br><span class="line">        P(mutex);</span><br><span class="line">        count--;</span><br><span class="line">        <span class="keyword">if</span>(count == <span class="number">0</span>)<span class="comment">//如果是最后一个读者，释放文件</span></span><br><span class="line">        &#123;</span><br><span class="line">            V(S);</span><br><span class="line">        &#125;</span><br><span class="line">        V(mutex);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">reader2()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        P(mutex);</span><br><span class="line">        <span class="keyword">if</span>(count == <span class="number">0</span>)   </span><br><span class="line">        &#123;</span><br><span class="line">            P(S);</span><br><span class="line">        &#125;</span><br><span class="line">        count++;</span><br><span class="line">        V(mutex);</span><br><span class="line">        读;</span><br><span class="line">        P(mutex);</span><br><span class="line">        count--;</span><br><span class="line">        <span class="keyword">if</span>(count == <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            V(S);</span><br><span class="line">        &#125;</span><br><span class="line">        V(mutex);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>上述代码也可以合并。</li>
+</ul>
+</li>
+<li><p>例：横跨峡谷有一根绳索，猴子通过绳索过峡谷。只要他们朝着相同的方向，同一时刻可以有多只猴子通过。但如果相反方向同时有猴子通过则会产生死锁(假设一直猴子无法从另一只钩子身上翻过去)。如果一只猴子想过峡谷，必须看是否有相反方向的猴子通过。请用P，V操作解决问题。<img src="https://raw.github.com/wangyufei1006/Study-Notes/master/Image/os-5.png" alt="Image Text"></p>
+</li>
+<li><p>分析：只有读者</p>
+</li>
+</ul>
+<blockquote>
+<p>左猴团</p>
+<blockquote>
+<p>第一只：桥占用了吗？</p>
+<p>中间猴子：只增加数量</p>
+<p>最后一只：释放桥资源</p>
+</blockquote>
+<p>右猴团</p>
+<blockquote>
+<p>第一只：桥占用了吗？</p>
+<p>中间猴子：只增加数量</p>
+<p>最后一只：释放桥资源</p>
+</blockquote>
+</blockquote>
+<ul>
+<li><p>初始值：<code>count_L</code>：左边猴子数量</p>
+<p>​               <code>count_R</code>：右边猴子数量</p>
+<p>​               互斥信号量：<code>S</code></p>
+<p>​           <code>mutex_L</code>：左边猴子信号量</p>
+<p>​           <code>mutex_R</code>：右边猴子信号量</p>
+</li>
+<li><p>伪代码</p>
+</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">left()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        P(mutex_L);</span><br><span class="line">    	<span class="keyword">if</span>(count_L == <span class="number">0</span>)</span><br><span class="line">    	&#123;</span><br><span class="line">         	P(S);   </span><br><span class="line">    	&#125;</span><br><span class="line">    	count_L++;</span><br><span class="line">        V(mutex_L);</span><br><span class="line">        过桥;</span><br><span class="line">        P(mutex_L);</span><br><span class="line">        count_L--;</span><br><span class="line">        <span class="keyword">if</span>(count_L == <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            V(S);</span><br><span class="line">        &#125;</span><br><span class="line">        V(mutex_L);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">right()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">while</span>(<span class="number">1</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        P(mutex_R);</span><br><span class="line">    	<span class="keyword">if</span>(count_R == <span class="number">0</span>)</span><br><span class="line">    	&#123;</span><br><span class="line">         	P(S);   </span><br><span class="line">    	&#125;</span><br><span class="line">    	count_R++;</span><br><span class="line">        V(mutex_R);</span><br><span class="line">        过桥;</span><br><span class="line">        P(mutex_R);</span><br><span class="line">        count_R--;</span><br><span class="line">        <span class="keyword">if</span>(count_R == <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            V(S);</span><br><span class="line">        &#125;</span><br><span class="line">        V(mutex_R);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/03/读者、写者和生产者、消费者的区别/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="McFly">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="McFly�ճ����">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/03/读者、写者和生产者、消费者的区别/" itemprop="url">未命名</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-03T17:14:29+08:00">
+                2018-11-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="读者、写者和生产者、消费者的区别"><a href="#读者、写者和生产者、消费者的区别" class="headerlink" title="读者、写者和生产者、消费者的区别"></a>读者、写者和生产者、消费者的区别</h3><ul>
+<li>资源的影响<ul>
+<li>读者，消费者消耗资源</li>
+<li>生产者，写者增加资源</li>
+</ul>
+</li>
+<li>读者——读者团（计数）：第一个、中间、最后一个。<ul>
+<li>生产者，消费者：对剩余空间、已占用空间计数</li>
+<li>读者对读者团有多少进行计数。</li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/03/死锁/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="McFly">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="McFly�ճ����">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/03/死锁/" itemprop="url">未命名</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-03T17:14:29+08:00">
+                2018-11-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h3 id="死锁"><a href="#死锁" class="headerlink" title="死锁"></a>死锁</h3><blockquote>
+<p>死锁</p>
+<p>原因及必要条件 </p>
+<p>处理问题</p>
+<blockquote>
+<p>预防死锁</p>
+<blockquote>
+<p>破坏必要条件</p>
+</blockquote>
+<p>避免死锁</p>
+<blockquote>
+<p>银行家算法</p>
+</blockquote>
+<p>检测与解除死锁</p>
+<blockquote>
+<p>死锁定理+资源分配图</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<ul>
+<li><p>三胞胎</p>
+<ul>
+<li>死锁：资源被占有，双方互不相让，导致都不能运行。</li>
+<li>活锁：双方互相谦让，导致资源空闲。</li>
+<li>饥饿：有一方等待时间过长。</li>
+</ul>
+</li>
+<li><p>死锁避免</p>
+<ul>
+<li>银行家算法</li>
+</ul>
+<blockquote>
+<p>安全序列（不唯一）</p>
+<blockquote>
+<p>找到</p>
+<blockquote>
+<p>无死锁</p>
+<blockquote>
+<p>可避免</p>
+</blockquote>
+</blockquote>
+<p>找不到</p>
+<blockquote>
+<p>必死锁</p>
+<blockquote>
+<p>无法避免</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</li>
+<li><p>银行家算法案例：</p>
+<p><img src="https://raw.github.com/wangyufei1006/Study-Notes/master/Image/os-6.png" alt="Image Text"></p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>最大值</th>
+<th>已分配</th>
+<th>可需要</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>万科</td>
+<td>6000</td>
+<td>4000</td>
+<td>2000</td>
+</tr>
+<tr>
+<td>恒大</td>
+<td>5000</td>
+<td>3000</td>
+<td>2000</td>
+</tr>
+<tr>
+<td>万达</td>
+<td>3000</td>
+<td>2000</td>
+<td>1000</td>
+</tr>
+</tbody>
+</table>
+<p>一共有资产一亿，已经分配的有4000 + 3000 + 2000 = 9000万，还剩1000万，可以满足的只有万达，所以将1000万分配给万达。</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>最大值</th>
+<th>已分配</th>
+<th>可需要</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>万科</td>
+<td>6000</td>
+<td>4000</td>
+<td>2000</td>
+</tr>
+<tr>
+<td>恒大</td>
+<td>5000</td>
+<td>3000</td>
+<td>2000</td>
+</tr>
+</tbody>
+</table>
+<p>因为上面将剩余的已分配给万达，所以万达运行完，就会释放资源，所以目前剩下3000万的资产，可以将其分配给万科或者恒大，我就将其资产分配给万科。剩余3000 - 2000 = 1000万。</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>最大值</th>
+<th>已分配</th>
+<th>可需要</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>恒大</td>
+<td>5000</td>
+<td>3000</td>
+<td>2000</td>
+</tr>
+</tbody>
+</table>
+<p>将万达释放的资源分配给万科之后，万科运行完就会释放资源，目前资产就会剩余1000 + 6000 = 7000万，最后将其分配给恒大。</p>
+<p>所以安全序列为<code>万达—万科—恒大</code>或者<code>万达—恒大—万科</code>。</p>
+<ul>
+<li>案例：<ul>
+<li>available（拥有的）</li>
+<li>Max（最大分配量）</li>
+<li>allocation（已分配）</li>
+<li>need（可需要）</li>
+<li>residue（剩余量）</li>
+</ul>
+</li>
+</ul>
+<p>$$<br>available = \left[<br> \begin{matrix}<br>   3 &amp; 3 &amp; 2<br>  \end{matrix}<br>  \right] \tag{1}<br>$$</p>
+<p>$$<br>Max = \left[<br> \begin{matrix}<br>   7 &amp; 5 &amp; 3  \<br>   3 &amp; 2 &amp; 2 \<br>   9 &amp; 0 &amp; 2 \<br>   2 &amp; 2 &amp; 2 \<br>   4 &amp; 3 &amp; 3 \<br>  \end{matrix}<br>  \right] \tag{2}<br>$$</p>
+<p>$$<br>allocation = \left[<br> \begin{matrix}<br>   0 &amp; 1 &amp; 0  \<br>   2 &amp; 0 &amp; 0 \<br>   3 &amp; 0 &amp; 2 \<br>   2 &amp; 1 &amp; 1 \<br>   0 &amp; 0 &amp; 2 \<br>  \end{matrix}<br>  \right] \tag{3}<br>$$</p>
+<p>$$<br>need = Max - allocation = \left[<br> \begin{matrix}<br>   7 &amp; 4 &amp; 3  \<br>   1 &amp; 2 &amp; 2 \<br>   6 &amp; 0 &amp; 0 \<br>   0 &amp; 1 &amp; 1 \<br>   4 &amp; 3 &amp; 1 \<br>  \end{matrix}<br>  \right] \tag{4}<br>$$</p>
+<p><code>need = Max - allocation</code></p>
+<p>上述对应的线程是P1，P2，P3，P4，P5，拥有的资源量是A,B,C。</p>
+<ul>
+<li><p>第一步：上述进程中，满足的有P2进程。释放P2进程资源，计算公式<code>available - need + Max</code>。<br>$$<br>need = \left[<br> \begin{matrix}<br>   7 &amp; 4 &amp; 3  \<br>   6 &amp; 0 &amp; 0 \<br>   0 &amp; 1 &amp; 1 \<br>   4 &amp; 3 &amp; 1 \<br>  \end{matrix}<br>  \right] \tag{5}<br>$$</p>
+<p>$$<br>residue  =  \left[<br> \begin{matrix}<br>   5 &amp; 3 &amp; 2<br>  \end{matrix}<br>  \right] \tag{6}<br>$$</p>
+</li>
+</ul>
+<ul>
+<li><p>第二步，满足的有P4和P5进程，这里以P4进程为例。<br>$$<br>need = \left[<br> \begin{matrix}<br>   7 &amp; 4 &amp; 3  \<br>   6 &amp; 0 &amp; 0 \<br>   4 &amp; 3 &amp; 1 \<br>  \end{matrix}<br>  \right] \tag{5}<br>$$</p>
+<p>$$<br>residue  =  \left[<br> \begin{matrix}<br>   7 &amp; 4 &amp; 3<br>  \end{matrix}<br>  \right] \tag{8}<br>$$</p>
+</li>
+</ul>
+<ul>
+<li><p>第三步，满足的有P1进程。<br>$$<br>need = \left[<br> \begin{matrix}<br>   6 &amp; 0 &amp; 0 \<br>   4 &amp; 3 &amp; 1 \<br>  \end{matrix}<br>  \right] \tag{5}<br>$$</p>
+<p>$$<br>residue  =  \left[<br> \begin{matrix}<br>   7 &amp; 5 &amp; 3<br>  \end{matrix}<br>  \right] \tag{8}<br>$$</p>
+</li>
+</ul>
+<ul>
+<li><p>第四步，满足的有P3进程。<br>$$<br>need = \left[<br> \begin{matrix}<br>   4 &amp; 3 &amp; 1 \<br>  \end{matrix}<br>  \right] \tag{5}<br>$$</p>
+<p>$$<br>residue  =  \left[<br> \begin{matrix}<br>   10 &amp; 5 &amp; 5<br>  \end{matrix}<br>  \right] \tag{8}<br>$$</p>
+</li>
+<li><p>第五步，进程结束。</p>
+</li>
+</ul>
+<p>此程序的安全序列是P2，P4，P1，P3，P5。</p>
+<p><img src="https://raw.github.com/wangyufei1006/Study-Notes/master/Image/os-7.png" alt="Image Text"></p>
+<ul>
+<li><p>资源转换图</p>
+<p><img src="https://raw.github.com/wangyufei1006/Study-Notes/master/Image/os-8.png" alt="Image Text"></p>
+</li>
+</ul>
+<p><img src="https://raw.github.com/wangyufei1006/Study-Notes/master/Image/os-9.png" alt="Image Text"><img src="https://raw.github.com/wangyufei1006/Study-Notes/master/Image/os-10.png" alt="Image Text"></p>
+<p>①寻找圆圈进程，判断申请边是否能够得到满足，满足则删除，不满足则找下一个进程。</p>
+<p><img src="https://raw.github.com/wangyufei1006/Study-Notes/master/Image/os-11.png" alt="Image Text"></p>
+<p>②<img src="https://raw.github.com/wangyufei1006/Study-Notes/master/Image/os-12.png" alt="Image Text"></p>
+<p>③<img src="https://raw.github.com/wangyufei1006/Study-Notes/master/Image/os-13.png" alt="Image Text"></p>
+<ul>
+<li><p>根据资源转换图写出四个矩阵<br>$$<br>Max = \left[<br> \begin{matrix}<br>   2 &amp; 1  \<br>   2&amp; 1 \<br>  \end{matrix}<br>  \right] \tag{5}<br>$$</p>
+<p>$$<br>allocation = \left[<br> \begin{matrix}<br>   2 &amp; 0  \<br>   1 &amp; 1 \<br>  \end{matrix}<br>  \right] \tag{5}<br>$$</p>
+<p>$$<br>need = \left[<br> \begin{matrix}<br>   0 &amp; 1  \<br>   1 &amp; 0 \<br>  \end{matrix}<br>  \right] \tag{5}<br>$$</p>
+<p>$$<br>available = \left[<br> \begin{matrix}<br>   1 &amp; 1 \<br>  \end{matrix}<br>  \right] \tag{5}<br>$$</p>
+</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/03/hello-world/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -251,7 +1103,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/11/03/hello-world/" itemprop="url">Hello World</a></h1>
+                <a class="post-title-link" href="/2018/11/03/hello-world/" itemprop="url">死锁</a></h1>
         
 
         <div class="post-meta">
@@ -303,7 +1155,194 @@
       
         
           
-            <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
+            <h3 id="死锁"><a href="#死锁" class="headerlink" title="死锁"></a>死锁</h3><blockquote>
+<p>死锁</p>
+<p>原因及必要条件 </p>
+<p>处理问题</p>
+<blockquote>
+<p>预防死锁</p>
+<blockquote>
+<p>破坏必要条件</p>
+</blockquote>
+<p>避免死锁</p>
+<blockquote>
+<p>银行家算法</p>
+</blockquote>
+<p>检测与解除死锁</p>
+<blockquote>
+<p>死锁定理+资源分配图</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<ul>
+<li><p>三胞胎</p>
+<ul>
+<li>死锁：资源被占有，双方互不相让，导致都不能运行。</li>
+<li>活锁：双方互相谦让，导致资源空闲。</li>
+<li>饥饿：有一方等待时间过长。</li>
+</ul>
+</li>
+<li><p>死锁避免</p>
+<ul>
+<li>银行家算法</li>
+</ul>
+<blockquote>
+<p>安全序列（不唯一）</p>
+<blockquote>
+<p>找到</p>
+<blockquote>
+<p>无死锁</p>
+<blockquote>
+<p>可避免</p>
+</blockquote>
+</blockquote>
+<p>找不到</p>
+<blockquote>
+<p>必死锁</p>
+<blockquote>
+<p>无法避免</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</li>
+<li><p>银行家算法案例：</p>
+<p><img src="https://raw.github.com/wangyufei1006/Study-Notes/master/Image/os-6.png" alt="Image Text"></p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>最大值</th>
+<th>已分配</th>
+<th>可需要</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>万科</td>
+<td>6000</td>
+<td>4000</td>
+<td>2000</td>
+</tr>
+<tr>
+<td>恒大</td>
+<td>5000</td>
+<td>3000</td>
+<td>2000</td>
+</tr>
+<tr>
+<td>万达</td>
+<td>3000</td>
+<td>2000</td>
+<td>1000</td>
+</tr>
+</tbody>
+</table>
+<p>一共有资产一亿，已经分配的有4000 + 3000 + 2000 = 9000万，还剩1000万，可以满足的只有万达，所以将1000万分配给万达。</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>最大值</th>
+<th>已分配</th>
+<th>可需要</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>万科</td>
+<td>6000</td>
+<td>4000</td>
+<td>2000</td>
+</tr>
+<tr>
+<td>恒大</td>
+<td>5000</td>
+<td>3000</td>
+<td>2000</td>
+</tr>
+</tbody>
+</table>
+<p>因为上面将剩余的已分配给万达，所以万达运行完，就会释放资源，所以目前剩下3000万的资产，可以将其分配给万科或者恒大，我就将其资产分配给万科。剩余3000 - 2000 = 1000万。</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>最大值</th>
+<th>已分配</th>
+<th>可需要</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>恒大</td>
+<td>5000</td>
+<td>3000</td>
+<td>2000</td>
+</tr>
+</tbody>
+</table>
+<p>将万达释放的资源分配给万科之后，万科运行完就会释放资源，目前资产就会剩余1000 + 6000 = 7000万，最后将其分配给恒大。</p>
+<p>所以安全序列为<code>万达—万科—恒大</code>或者<code>万达—恒大—万科</code>。</p>
+<ul>
+<li>案例：<ul>
+<li>available（拥有的）</li>
+<li>Max（最大分配量）</li>
+<li>allocation（已分配）</li>
+<li>need（可需要）</li>
+<li>residue（剩余量）</li>
+</ul>
+</li>
+</ul>
+<p>$$<br>available = \left[<br> \begin{matrix}<br>   3 &amp; 3 &amp; 2<br>  \end{matrix}<br>  \right] \tag{1}<br>$$</p>
+<p>$$<br>Max = \left[<br> \begin{matrix}<br>   7 &amp; 5 &amp; 3  \<br>   3 &amp; 2 &amp; 2 \<br>   9 &amp; 0 &amp; 2 \<br>   2 &amp; 2 &amp; 2 \<br>   4 &amp; 3 &amp; 3 \<br>  \end{matrix}<br>  \right] \tag{2}<br>$$</p>
+<p>$$<br>allocation = \left[<br> \begin{matrix}<br>   0 &amp; 1 &amp; 0  \<br>   2 &amp; 0 &amp; 0 \<br>   3 &amp; 0 &amp; 2 \<br>   2 &amp; 1 &amp; 1 \<br>   0 &amp; 0 &amp; 2 \<br>  \end{matrix}<br>  \right] \tag{3}<br>$$</p>
+<p>$$<br>need = Max - allocation = \left[<br> \begin{matrix}<br>   7 &amp; 4 &amp; 3  \<br>   1 &amp; 2 &amp; 2 \<br>   6 &amp; 0 &amp; 0 \<br>   0 &amp; 1 &amp; 1 \<br>   4 &amp; 3 &amp; 1 \<br>  \end{matrix}<br>  \right] \tag{4}<br>$$</p>
+<p><code>need = Max - allocation</code></p>
+<p>上述对应的线程是P1，P2，P3，P4，P5，拥有的资源量是A,B,C。</p>
+<ul>
+<li><p>第一步：上述进程中，满足的有P2进程。释放P2进程资源，计算公式<code>available - need + Max</code>。<br>$$<br>need = \left[<br> \begin{matrix}<br>   7 &amp; 4 &amp; 3  \<br>   6 &amp; 0 &amp; 0 \<br>   0 &amp; 1 &amp; 1 \<br>   4 &amp; 3 &amp; 1 \<br>  \end{matrix}<br>  \right] \tag{5}<br>$$</p>
+<p>$$<br>residue  =  \left[<br> \begin{matrix}<br>   5 &amp; 3 &amp; 2<br>  \end{matrix}<br>  \right] \tag{6}<br>$$</p>
+</li>
+</ul>
+<ul>
+<li><p>第二步，满足的有P4和P5进程，这里以P4进程为例。<br>$$<br>need = \left[<br> \begin{matrix}<br>   7 &amp; 4 &amp; 3  \<br>   6 &amp; 0 &amp; 0 \<br>   4 &amp; 3 &amp; 1 \<br>  \end{matrix}<br>  \right] \tag{5}<br>$$</p>
+<p>$$<br>residue  =  \left[<br> \begin{matrix}<br>   7 &amp; 4 &amp; 3<br>  \end{matrix}<br>  \right] \tag{8}<br>$$</p>
+</li>
+</ul>
+<ul>
+<li><p>第三步，满足的有P1进程。<br>$$<br>need = \left[<br> \begin{matrix}<br>   6 &amp; 0 &amp; 0 \<br>   4 &amp; 3 &amp; 1 \<br>  \end{matrix}<br>  \right] \tag{5}<br>$$</p>
+<p>$$<br>residue  =  \left[<br> \begin{matrix}<br>   7 &amp; 5 &amp; 3<br>  \end{matrix}<br>  \right] \tag{8}<br>$$</p>
+</li>
+</ul>
+<ul>
+<li><p>第四步，满足的有P3进程。<br>$$<br>need = \left[<br> \begin{matrix}<br>   4 &amp; 3 &amp; 1 \<br>  \end{matrix}<br>  \right] \tag{5}<br>$$</p>
+<p>$$<br>residue  =  \left[<br> \begin{matrix}<br>   10 &amp; 5 &amp; 5<br>  \end{matrix}<br>  \right] \tag{8}<br>$$</p>
+</li>
+<li><p>第五步，进程结束。</p>
+</li>
+</ul>
+<p>此程序的安全序列是P2，P4，P1，P3，P5。</p>
+<p><img src="https://raw.github.com/wangyufei1006/Study-Notes/master/Image/os-7.png" alt="Image Text"></p>
+<ul>
+<li><p>资源转换图</p>
+<p><img src="https://raw.github.com/wangyufei1006/Study-Notes/master/Image/os-8.png" alt="Image Text"></p>
+</li>
+</ul>
+<p><img src="https://raw.github.com/wangyufei1006/Study-Notes/master/Image/os-9.png" alt="Image Text"><img src="https://raw.github.com/wangyufei1006/Study-Notes/master/Image/os-10.png" alt="Image Text"></p>
+<p>①寻找圆圈进程，判断申请边是否能够得到满足，满足则删除，不满足则找下一个进程。</p>
+<p><img src="https://raw.github.com/wangyufei1006/Study-Notes/master/Image/os-11.png" alt="Image Text"></p>
+<p>②<img src="https://raw.github.com/wangyufei1006/Study-Notes/master/Image/os-12.png" alt="Image Text"></p>
+<p>③<img src="https://raw.github.com/wangyufei1006/Study-Notes/master/Image/os-13.png" alt="Image Text"></p>
+<ul>
+<li><p>根据资源转换图写出四个矩阵<br>$$<br>Max = \left[<br> \begin{matrix}<br>   2 &amp; 1  \<br>   2&amp; 1 \<br>  \end{matrix}<br>  \right] \tag{5}<br>$$</p>
+<p>$$<br>allocation = \left[<br> \begin{matrix}<br>   2 &amp; 0  \<br>   1 &amp; 1 \<br>  \end{matrix}<br>  \right] \tag{5}<br>$$</p>
+<p>$$<br>need = \left[<br> \begin{matrix}<br>   0 &amp; 1  \<br>   1 &amp; 0 \<br>  \end{matrix}<br>  \right] \tag{5}<br>$$</p>
+<p>$$<br>available = \left[<br> \begin{matrix}<br>   1 &amp; 1 \<br>  \end{matrix}<br>  \right] \tag{5}<br>$$</p>
+</li>
+</ul>
 
           
         
@@ -385,7 +1424,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-count">5</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
